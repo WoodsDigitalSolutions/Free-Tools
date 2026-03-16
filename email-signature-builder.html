@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Signature Builder — Woods Digital Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#030a14; --surface:#071020; --surface2:#0b1828;
+    --border:#112240; --text:#eef4ff; --muted:#a0b4c8;
+    --accent:#a8ff3e; --accent-dim:rgba(168,255,62,.1);
+    --accent-border:rgba(168,255,62,.25);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(3,10,20,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:60px;}
+  .nav-logo{display:flex;align-items:center;text-decoration:none;}
+  .nav-logo img{height:36px;}
+  .nav-back{font-size:.78rem;color:#fff;text-decoration:none;transition:color .2s;letter-spacing:.04em;}
+  .nav-back:hover{color:var(--accent);}
+
+  /* HERO */
+  .hero{text-align:center;padding:52px 40px 32px;}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid var(--accent-border);border-radius:20px;padding:4px 14px;font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;}
+  .badge::before{content:'';width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,5vw,4.5rem);letter-spacing:.04em;line-height:.95;margin-bottom:12px;}
+  h1 em{font-style:normal;color:var(--accent);}
+  .hero-sub{font-size:.95rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;font-weight:300;}
+
+  /* MAIN */
+  .main{max-width:1200px;margin:0 auto;padding:32px 40px 100px;display:grid;grid-template-columns:340px 1fr;gap:28px;align-items:start;}
+
+  /* PANEL */
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:18px;position:sticky;top:76px;max-height:calc(100vh - 96px);overflow-y:auto;}
+  .panel::-webkit-scrollbar{width:4px;}
+  .panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .sec-title{font-size:.6rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .field-group{display:flex;flex-direction:column;gap:6px;}
+  .field-label{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  input[type="text"],input[type="email"],input[type="url"],input[type="tel"]{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;padding:9px 12px;outline:none;transition:border-color .2s;}
+  input[type="text"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="tel"]:focus{border-color:var(--accent);}
+  input::placeholder{color:var(--muted);}
+  .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  /* LOGO UPLOAD */
+  .upload-area{background:var(--bg);border:1.5px dashed var(--border);border-radius:9px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+  .upload-area:hover{border-color:var(--accent);}
+  .upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-icon{font-size:1.6rem;margin-bottom:6px;}
+  .upload-text{font-size:.78rem;color:var(--muted);}
+  .upload-text strong{color:var(--accent);}
+  .upload-preview{display:none;align-items:center;gap:12px;margin-top:10px;}
+  .upload-preview img{max-height:40px;max-width:120px;border-radius:4px;}
+  .upload-remove{font-size:.7rem;color:#ff6b6b;cursor:pointer;background:none;border:none;padding:0;}
+
+  /* COLOR PICKERS */
+  .color-row{display:flex;gap:10px;}
+  .color-item{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;}
+  .color-item label{font-size:.62rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+  input[type="color"]{width:28px;height:28px;border:none;background:none;cursor:pointer;border-radius:4px;padding:0;flex-shrink:0;}
+
+  /* FONT SELECT */
+  select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;padding:9px 12px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0b4c8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+  select:focus{border-color:var(--accent);}
+  select option{background:#071020;}
+
+  /* LOGO SIZE SLIDER */
+  .slider-row{display:flex;align-items:center;gap:10px;}
+  .slider-row input[type="range"]{flex:1;accent-color:var(--accent);cursor:pointer;}
+  .slider-val{font-size:.72rem;color:var(--text);width:40px;text-align:right;}
+
+  /* LAYOUT OPTIONS */
+  .layout-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .layout-opt{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 6px;cursor:pointer;text-align:center;transition:all .15s;}
+  .layout-opt:hover{border-color:var(--accent);}
+  .layout-opt.active{border-color:var(--accent);background:var(--accent-dim);}
+  .layout-opt-label{font-size:.62rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:5px;}
+  .layout-opt.active .layout-opt-label{color:var(--accent);}
+
+  /* SOCIAL */
+  .social-grid{display:flex;flex-direction:column;gap:8px;}
+  .social-row{display:flex;align-items:center;gap:8px;}
+  .social-badge{width:72px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;letter-spacing:.06em;color:white;flex-shrink:0;font-family:Arial,sans-serif;}
+  .social-row input{flex:1;font-size:.8rem;padding:7px 10px;}
+
+  /* DIVIDER */
+  .panel-divider{height:1px;background:var(--border);}
+
+  /* PREVIEW AREA */
+  .preview-area{display:flex;flex-direction:column;gap:20px;}
+  .preview-header{display:flex;align-items:center;justify-content:space-between;}
+  .preview-title{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+
+  /* EMAIL MOCKUP */
+  .email-mockup{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .email-chrome{background:#f1f3f4;padding:12px 16px;border-bottom:1px solid #dadce0;display:flex;align-items:center;gap:8px;}
+  .email-dot{width:10px;height:10px;border-radius:50%;}
+  .email-bar{flex:1;background:#fff;border-radius:4px;height:20px;margin-left:8px;}
+  .email-body{padding:24px 28px 0;}
+  .email-meta{margin-bottom:16px;}
+  .email-from{font-size:.82rem;color:#333;font-family:Arial,sans-serif;margin-bottom:4px;}<br>
+  .email-subject{font-size:.9rem;font-weight:600;color:#111;font-family:Arial,sans-serif;margin-bottom:4px;}
+  .email-to{font-size:.78rem;color:#888;font-family:Arial,sans-serif;}
+  .email-content{font-size:.85rem;color:#333;font-family:Arial,sans-serif;line-height:1.6;margin-bottom:20px;}
+  .email-sig-wrap{border-top:1px solid #e0e0e0;padding:16px 0 24px;}
+
+  /* SIGNATURE PREVIEW — rendered in white bg */
+  #sig-render{font-family:Arial,sans-serif;}
+
+  /* INSTRUCTIONS */
+  .instructions{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;}
+  .inst-title{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  .inst-steps{display:flex;flex-direction:column;gap:10px;}
+  .inst-step{display:flex;align-items:flex-start;gap:12px;}
+  .inst-num{width:22px;height:22px;background:var(--accent);color:#030a14;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0;margin-top:1px;}
+  .inst-text{font-size:.82rem;color:var(--muted);line-height:1.5;}
+  .inst-text strong{color:var(--text);}
+
+  /* PLATFORM TABS */
+  .platform-tabs{display:flex;gap:6px;margin-bottom:14px;}
+  .ptab{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:.72rem;cursor:pointer;color:var(--muted);transition:all .15s;}
+  .ptab.active{border-color:var(--accent);color:var(--accent);}
+
+  /* COPY BUTTON */
+  .copy-btn{width:100%;background:var(--accent);color:#030a14;font-family:'Outfit';font-weight:700;font-size:1.1rem;padding:15px;border:none;border-radius:10px;cursor:pointer;letter-spacing:.04em;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .copy-btn:hover{background:#c0ff6a;transform:translateY(-1px);}
+  .copy-btn.copied{background:#06d6a0;color:#fff;}
+
+  /* CTA STRIP */
+  .cta-strip{background:var(--accent-dim);border:1px solid var(--accent-border);border-left:4px solid var(--accent);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px;}
+  .cta-strip-text{font-size:.82rem;color:var(--text);line-height:1.5;font-weight:300;}
+  .cta-strip-link{color:var(--accent);font-weight:600;font-size:.82rem;text-decoration:none;white-space:nowrap;letter-spacing:.04em;}
+  .cta-strip-link:hover{text-decoration:underline;}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+  .modal-overlay.active{display:flex;}
+  .modal-card{background:#071020;border:1px solid var(--border);border-top:4px solid var(--accent);border-radius:14px;padding:40px;max-width:460px;width:100%;text-align:center;}
+  .modal-logo{margin-bottom:20px;}
+  .modal-logo img{height:36px;}
+  .modal-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.06em;color:var(--accent);margin-bottom:12px;line-height:1;}
+  .modal-sub{font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:24px;font-weight:300;}
+  .modal-cta{display:block;background:var(--accent);color:#030a14;font-family:'Outfit';font-weight:700;font-size:1rem;padding:14px 28px;border-radius:9px;text-decoration:none;letter-spacing:.04em;transition:all .15s;margin-bottom:14px;}
+  .modal-cta:hover{background:#c0ff6a;}
+  .modal-dismiss{font-size:.78rem;color:var(--muted);cursor:pointer;background:none;border:none;padding:4px;}
+  .modal-dismiss:hover{color:var(--text);}
+
+  /* MOBILE */
+  @media(max-width:768px){
+    nav{padding:0 16px;}
+    .hero{padding:40px 16px 24px;}
+    .main{grid-template-columns:1fr;padding:20px 16px 60px;}
+    .panel{position:static;max-height:none;}
+    .fields-grid{grid-template-columns:1fr;}
+    .color-row{flex-direction:column;}
+    .copy-btn{font-size:1rem;}
+    .cta-strip{flex-direction:column;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://woodsdigitalsolutions.com" target="_blank">
+    <img src="WDSLogo-3b.png" height="36" alt="Woods Digital Solutions">
+  </a>
+  <a class="nav-back" href="index.html">← All Tools</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Free Tool</div>
+  <h1>Email <em>Signature</em><br>Builder</h1>
+  <p class="hero-sub">Build a professional email signature in minutes. Preview it live, copy it, and paste directly into Gmail, Outlook, or Apple Mail.</p>
+</div>
+
+<div class="main">
+
+  <!-- PANEL -->
+  <div class="panel">
+
+    <!-- CONTACT INFO -->
+    <div>
+      <div class="sec-title">Your Information</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="field-group">
+          <label class="field-label">Full Name *</label>
+          <input type="text" id="f-name" placeholder="e.g. Virgil Woods" oninput="render()">
+        </div>
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">Job Title</label>
+            <input type="text" id="f-title" placeholder="CEO / Pastor / Director" oninput="render()">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Company</label>
+            <input type="text" id="f-company" placeholder="Company Name" oninput="render()">
+          </div>
+        </div>
+        <div class="fields-grid">
+          <div class="field-group">
+            <label class="field-label">Phone</label>
+            <input type="tel" id="f-phone" placeholder="(555) 555-5555" oninput="render()">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Email</label>
+            <input type="email" id="f-email" placeholder="you@domain.com" oninput="render()">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Website</label>
+          <input type="url" id="f-website" placeholder="https://yourwebsite.com" oninput="render()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Address (optional)</label>
+          <input type="text" id="f-address" placeholder="City, State" oninput="render()">
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-divider"></div>
+
+    <!-- LOGO -->
+    <div>
+      <div class="sec-title">Logo (optional)</div>
+      <div class="upload-area" id="upload-area">
+        <input type="file" id="logo-upload" accept="image/png,image/jpeg,image/svg+xml,image/gif" onchange="handleLogoUpload(event)">
+        <div class="upload-icon">🖼️</div>
+        <div class="upload-text"><strong>Click to upload</strong> your logo<br>PNG, JPG or SVG — under 200kb recommended</div>
+      </div>
+      <div class="upload-preview" id="upload-preview">
+        <img id="logo-preview-img" src="" alt="Logo">
+        <button class="upload-remove" onclick="removeLogo()">✕ Remove</button>
+      </div>
+      <div style="margin-top:10px;">
+        <label class="field-label" style="margin-bottom:6px;display:block;">Logo Width</label>
+        <div class="slider-row">
+          <input type="range" id="logo-width" min="60" max="220" value="120" oninput="render()">
+          <span class="slider-val" id="logo-width-val">120px</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-divider"></div>
+
+    <!-- DESIGN -->
+    <div>
+      <div class="sec-title">Design</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <label class="field-label" style="margin-bottom:6px;display:block;">Layout</label>
+          <div class="layout-opts">
+            <div class="layout-opt active" data-layout="left" onclick="setLayout(this)">
+              <div style="display:flex;align-items:center;justify-content:center;gap:3px;height:24px;">
+                <div style="width:10px;height:10px;border-radius:2px;background:var(--muted)"></div>
+                <div style="display:flex;flex-direction:column;gap:2px"><div style="width:18px;height:3px;border-radius:1px;background:var(--muted)"></div><div style="width:12px;height:3px;border-radius:1px;background:var(--muted)"></div></div>
+              </div>
+              <div class="layout-opt-label">Left</div>
+            </div>
+            <div class="layout-opt" data-layout="top-left" onclick="setLayout(this)">
+              <div style="display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;height:24px;padding-left:8px;">
+                <div style="width:10px;height:10px;border-radius:2px;background:var(--muted)"></div>
+                <div style="width:18px;height:3px;border-radius:1px;background:var(--muted)"></div>
+              </div>
+              <div class="layout-opt-label">Top Left</div>
+            </div>
+            <div class="layout-opt" data-layout="top-center" onclick="setLayout(this)">
+              <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:24px;">
+                <div style="width:10px;height:10px;border-radius:2px;background:var(--muted)"></div>
+                <div style="width:18px;height:3px;border-radius:1px;background:var(--muted)"></div>
+              </div>
+              <div class="layout-opt-label">Top Center</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" style="margin-bottom:6px;display:block;">Font</label>
+          <select id="sig-font" onchange="render()">
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="Tahoma, sans-serif">Tahoma</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label" style="margin-bottom:6px;display:block;">Colors</label>
+          <div class="color-row">
+            <div class="color-item">
+              <label>Name</label>
+              <input type="color" id="color-name" value="#a8ff3e" oninput="render()">
+            </div>
+            <div class="color-item">
+              <label>Accent</label>
+              <input type="color" id="color-accent" value="#3a7bd5" oninput="render()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-divider"></div>
+
+    <!-- SOCIAL -->
+    <div>
+      <div class="sec-title">Social Links (optional)</div>
+      <div class="social-grid">
+        <div class="social-row">
+          <div class="social-badge" style="background:#0077b5">LinkedIn</div>
+          <input type="url" id="s-linkedin" placeholder="linkedin.com/in/you" oninput="render()">
+        </div>
+        <div class="social-row">
+          <div class="social-badge" style="background:#1877f2">Facebook</div>
+          <input type="url" id="s-facebook" placeholder="facebook.com/yourpage" oninput="render()">
+        </div>
+        <div class="social-row">
+          <div class="social-badge" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)">Instagram</div>
+          <input type="url" id="s-instagram" placeholder="instagram.com/you" oninput="render()">
+        </div>
+        <div class="social-row">
+          <div class="social-badge" style="background:#000">X/Twitter</div>
+          <input type="url" id="s-twitter" placeholder="x.com/yourhandle" oninput="render()">
+        </div>
+        <div class="social-row">
+          <div class="social-badge" style="background:#ff0000">YouTube</div>
+          <input type="url" id="s-youtube" placeholder="youtube.com/yourchannel" oninput="render()">
+        </div>
+        <div class="social-row">
+          <div class="social-badge" style="background:#0085ff">Bluesky</div>
+          <input type="url" id="s-bluesky" placeholder="bsky.app/profile/you" oninput="render()">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-area">
+
+    <div class="preview-header">
+      <div class="preview-title">Live Preview</div>
+    </div>
+
+    <!-- EMAIL MOCKUP -->
+    <div class="email-mockup">
+      <div class="email-chrome">
+        <div class="email-dot" style="background:#ff5f57"></div>
+        <div class="email-dot" style="background:#ffbd2e"></div>
+        <div class="email-dot" style="background:#28c840"></div>
+        <div class="email-bar"></div>
+      </div>
+      <div class="email-body">
+        <div class="email-meta">
+          <div class="email-from">From: <strong id="mock-name">Your Name</strong></div>
+          <div class="email-subject">Subject: Following up on our conversation</div>
+          <div class="email-to">To: client@example.com</div>
+        </div>
+        <div class="email-content">
+          Hi there,<br><br>
+          Just wanted to follow up and see if you had any questions. Looking forward to connecting with you soon.<br><br>
+          Best regards,
+        </div>
+        <div class="email-sig-wrap">
+          <div id="sig-render"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTRUCTIONS -->
+    <div class="instructions">
+      <div class="inst-title">How to add your signature</div>
+      <div class="platform-tabs">
+        <div class="ptab active" onclick="setTab(this,'gmail')">Gmail</div>
+        <div class="ptab" onclick="setTab(this,'outlook')">Outlook</div>
+        <div class="ptab" onclick="setTab(this,'apple')">Apple Mail</div>
+      </div>
+      <div class="inst-steps" id="inst-gmail">
+        <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">Click <strong>Copy Now</strong> below to copy your signature</div></div>
+        <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Open <strong>Gmail</strong> → click the gear icon → <strong>See all settings</strong></div></div>
+        <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">Scroll to <strong>Signature</strong> → click <strong>Create new</strong> or select existing</div></div>
+        <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">Click inside the signature box and paste with <strong>Cmd+V</strong> (Mac) or <strong>Ctrl+V</strong> (Windows)</div></div>
+        <div class="inst-step"><div class="inst-num">5</div><div class="inst-text">Scroll down and click <strong>Save Changes</strong></div></div>
+      </div>
+      <div class="inst-steps" id="inst-outlook" style="display:none">
+        <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">Click <strong>Copy Now</strong> below to copy your signature</div></div>
+        <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Open <strong>Outlook</strong> → <strong>File</strong> → <strong>Options</strong> → <strong>Mail</strong> → <strong>Signatures</strong></div></div>
+        <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">Click <strong>New</strong>, name your signature, then click in the edit box</div></div>
+        <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">Paste with <strong>Ctrl+V</strong> — your formatted signature will appear</div></div>
+        <div class="inst-step"><div class="inst-num">5</div><div class="inst-text">Click <strong>OK</strong> to save</div></div>
+      </div>
+      <div class="inst-steps" id="inst-apple" style="display:none">
+        <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">Click <strong>Copy Now</strong> below to copy your signature</div></div>
+        <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Open <strong>Apple Mail</strong> → <strong>Mail</strong> menu → <strong>Settings</strong> → <strong>Signatures</strong></div></div>
+        <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">Select your email account, click <strong>+</strong> to create a new signature</div></div>
+        <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">Click in the signature preview area and paste with <strong>Cmd+V</strong></div></div>
+        <div class="inst-step"><div class="inst-num">5</div><div class="inst-text">Close settings — your signature is saved automatically</div></div>
+      </div>
+    </div>
+
+    <!-- COPY BUTTON -->
+    <button class="copy-btn" id="copy-btn" onclick="copySignature()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3h8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Copy Now — Then Paste in Your Email Settings
+    </button>
+
+    <!-- CTA STRIP -->
+    <div class="cta-strip">
+      <div class="cta-strip-text">Great signature — now let's build a website that matches your brand.</div>
+      <a class="cta-strip-link" href="https://woodsdigitalsolutions.com/connect/" target="_blank">Let's Talk →</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-card">
+    <div class="modal-logo"><img src="WDSLogo-3b.png" height="36" alt="Woods Digital Solutions"></div>
+    <div class="modal-title">Your Signature is Copied!</div>
+    <p class="modal-sub">Now paste it into your email settings. Ready to take your brand further? Let Woods Digital Solutions build a website that makes every email count.</p>
+    <a class="modal-cta" href="https://woodsdigitalsolutions.com/connect/" target="_blank">Let's Build My Website →</a>
+    <button class="modal-dismiss" onclick="document.getElementById('modal').classList.remove('active')">No thanks, I'm just browsing</button>
+  </div>
+</div>
+
+<script>
+var logoData = null;
+var currentLayout = 'left';
+
+// Logo upload
+function handleLogoUpload(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    logoData = ev.target.result;
+    document.getElementById('logo-preview-img').src = logoData;
+    document.getElementById('upload-preview').style.display = 'flex';
+    render();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeLogo() {
+  logoData = null;
+  document.getElementById('upload-preview').style.display = 'none';
+  document.getElementById('logo-upload').value = '';
+  render();
+}
+
+// Layout
+function setLayout(el) {
+  document.querySelectorAll('.layout-opt').forEach(function(o){o.classList.remove('active');});
+  el.classList.add('active');
+  currentLayout = el.dataset.layout;
+  render();
+}
+
+// Platform tabs
+function setTab(el, id) {
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  ['gmail','outlook','apple'].forEach(function(p){
+    document.getElementById('inst-'+p).style.display = p===id?'flex':'none';
+  });
+  document.getElementById('inst-'+id).style.display = 'flex';
+}
+
+// Get values
+function G(id){ return document.getElementById(id).value.trim(); }
+
+// Build signature HTML
+function buildSig(forCopy) {
+  var name = G('f-name') || 'Your Name';
+  var title = G('f-title');
+  var company = G('f-company');
+  var phone = G('f-phone');
+  var email = G('f-email');
+  var website = G('f-website');
+  var address = G('f-address');
+  var font = document.getElementById('sig-font').value;
+  var cName = document.getElementById('color-name').value;
+  var cAccent = document.getElementById('color-accent').value;
+  var logoW = document.getElementById('logo-width').value;
+
+  var socials = [
+    {id:'s-linkedin', label:'LinkedIn', bg:'#0077b5'},
+    {id:'s-facebook', label:'Facebook', bg:'#1877f2'},
+    {id:'s-instagram', label:'Instagram', bg:'#e1306c'},
+    {id:'s-twitter', label:'X', bg:'#000000'},
+    {id:'s-youtube', label:'YouTube', bg:'#ff0000'},
+    {id:'s-bluesky', label:'Bluesky', bg:'#0085ff'},
+  ];
+
+  var activeSocials = socials.filter(function(s){ return G(s.id) !== ''; });
+
+  // Info block
+  var infoHTML = '<table cellpadding="0" cellspacing="0" border="0" style="font-family:'+font+';line-height:1.4;">';
+  infoHTML += '<tr><td style="font-size:17px;font-weight:700;color:'+cName+';padding-bottom:2px;">'+escH(name)+'</td></tr>';
+  if (title || company) {
+    var sub = [title, company].filter(Boolean).join(' · ');
+    infoHTML += '<tr><td style="font-size:12px;color:'+cAccent+';padding-bottom:6px;">'+escH(sub)+'</td></tr>';
+  }
+  infoHTML += '<tr><td style="height:1px;background:'+cAccent+';padding:0;margin:0;font-size:1px;line-height:1px;">&nbsp;</td></tr>';
+  infoHTML += '<tr><td style="padding-top:6px;">';
+  var details = [];
+  if (phone) details.push('<span style="font-size:12px;color:#444;">'+escH(phone)+'</span>');
+  if (email) details.push('<a href="mailto:'+escH(email)+'" style="font-size:12px;color:#444;text-decoration:none;">'+escH(email)+'</a>');
+  if (website) {
+    var wDisplay = website.replace(/^https?:\/\//,'');
+    details.push('<a href="'+escH(website)+'" style="font-size:12px;color:'+cAccent+';text-decoration:none;">'+escH(wDisplay)+'</a>');
+  }
+  if (address) details.push('<span style="font-size:12px;color:#888;">'+escH(address)+'</span>');
+  infoHTML += details.join('<span style="color:#ccc;font-size:11px;padding:0 5px;">|</span>');
+  infoHTML += '</td></tr>';
+
+  if (activeSocials.length > 0) {
+    infoHTML += '<tr><td style="padding-top:8px;">';
+    activeSocials.forEach(function(s) {
+      var url = G(s.id);
+      if (!url.startsWith('http')) url = 'https://' + url;
+      infoHTML += '<a href="'+url+'" style="display:inline-block;background:'+s.bg+';color:white;font-size:10px;font-weight:700;font-family:Arial,sans-serif;padding:3px 8px;border-radius:3px;text-decoration:none;margin-right:4px;margin-bottom:4px;letter-spacing:.04em;">'+s.label+'</a>';
+    });
+    infoHTML += '</td></tr>';
+  }
+
+  infoHTML += '</table>';
+
+  // Logo block
+  var logoHTML = '';
+  if (logoData) {
+    logoHTML = '<img src="'+logoData+'" width="'+logoW+'" style="display:block;max-width:'+logoW+'px;" alt="Logo">';
+  }
+
+  // Assemble by layout
+  var sig = '';
+  if (currentLayout === 'left') {
+    sig = '<table cellpadding="0" cellspacing="0" border="0"><tr>';
+    if (logoData) sig += '<td style="padding-right:16px;vertical-align:middle;">'+logoHTML+'</td>';
+    sig += '<td style="vertical-align:middle;">'+infoHTML+'</td>';
+    sig += '</tr></table>';
+  } else if (currentLayout === 'top-left') {
+    sig = '<table cellpadding="0" cellspacing="0" border="0">';
+    if (logoData) sig += '<tr><td style="padding-bottom:10px;">'+logoHTML+'</td></tr>';
+    sig += '<tr><td>'+infoHTML+'</td></tr></table>';
+  } else {
+    sig = '<table cellpadding="0" cellspacing="0" border="0" width="100%">';
+    if (logoData) sig += '<tr><td align="center" style="padding-bottom:10px;">'+logoHTML+'</td></tr>';
+    sig += '<tr><td align="center">'+infoHTML+'</td></tr></table>';
+  }
+
+  return sig;
+}
+
+function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Render live preview
+function render() {
+  var name = G('f-name') || 'Your Name';
+  document.getElementById('mock-name').textContent = name;
+  document.getElementById('logo-width-val').textContent = document.getElementById('logo-width').value + 'px';
+  document.getElementById('sig-render').innerHTML = buildSig(false);
+}
+
+// Copy
+function copySignature() {
+  var sigEl = document.getElementById('sig-render');
+  var range = document.createRange();
+  range.selectNodeContents(sigEl);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  document.execCommand('copy');
+  sel.removeAllRanges();
+
+  var btn = document.getElementById('copy-btn');
+  btn.classList.add('copied');
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3 8l3.5 3.5L13 4"/></svg> Copied! Now paste in your email settings';
+
+  setTimeout(function(){
+    btn.classList.remove('copied');
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 11V3h8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy Now — Then Paste in Your Email Settings';
+  }, 3000);
+
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('active');
+  }
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
