@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Palette Generator — Woods Digital Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #030a14; --surface: #071020; --surface2: #0b1828;
+    --border: #112240; --text: #eef4ff; --muted: #4a6080;
+    --accent: #a8ff3e; --accent-dim: rgba(168,255,62,.1);
+    --accent-border: rgba(168,255,62,.25);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(3,10,20,.9); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 60px;
+  }
+  .nav-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+  .nav-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: grid; place-items: center; }
+  .nav-mark svg { width: 14px; height: 14px; }
+  .nav-name { font-family: 'Bebas Neue'; font-size: 1.2rem; letter-spacing: .08em; color: var(--text); }
+  .nav-name span { color: var(--accent); }
+  .nav-back { font-size: .75rem; color: var(--muted); text-decoration: none; transition: color .2s; }
+  .nav-back:hover { color: var(--text); }
+
+  /* HERO */
+  .hero { text-align: center; padding: 60px 40px 40px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim); border: 1px solid var(--accent-border);
+    border-radius: 20px; padding: 4px 14px; font-size: .68rem;
+    font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 20px;
+  }
+  .badge::before { content: ''; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  h1 { font-family: 'Bebas Neue'; font-size: clamp(2.8rem, 6vw, 5rem); letter-spacing: .04em; line-height: .95; margin-bottom: 14px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub { font-size: .95rem; color: var(--muted); max-width: 440px; margin: 0 auto; line-height: 1.7; font-weight: 300; }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px 40px 100px; display: grid; grid-template-columns: 340px 1fr; gap: 28px; align-items: start; }
+
+  /* PANEL */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 24px; position: sticky; top: 76px; }
+  .panel-section-title { font-size: .6rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+  /* COLOR SWATCHES */
+  .swatch-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+  .swatch {
+    aspect-ratio: 1; border-radius: 6px; cursor: pointer;
+    border: 2px solid transparent; transition: all .15s;
+    position: relative;
+  }
+  .swatch:hover { transform: scale(1.12); z-index: 1; }
+  .swatch.selected-primary::after, .swatch.selected-secondary::after {
+    content: attr(data-label);
+    position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+    font-size: .5rem; letter-spacing: .06em; text-transform: uppercase;
+    white-space: nowrap; color: var(--accent); font-weight: 600;
+  }
+  .swatch.selected-primary { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .swatch.selected-secondary { border-color: #5b8af0; box-shadow: 0 0 0 3px rgba(91,138,240,.2); }
+
+  /* CUSTOM COLOR */
+  .custom-row { display: flex; gap: 8px; margin-top: 8px; }
+  .custom-input-wrap {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+    transition: border-color .2s;
+  }
+  .custom-input-wrap:focus-within { border-color: var(--accent); }
+  .custom-input-wrap label { font-size: .65rem; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+  input[type="color"] { width: 28px; height: 28px; border: none; background: none; cursor: pointer; border-radius: 4px; padding: 0; }
+  .hex-input {
+    background: none; border: none; color: var(--text); font-family: 'Outfit', monospace;
+    font-size: .82rem; width: 72px; outline: none; letter-spacing: .04em;
+  }
+  .hex-input::placeholder { color: var(--muted); }
+
+  /* GENERATE BUTTON */
+  .gen-btn {
+    width: 100%; background: var(--accent); color: #030a14;
+    font-family: 'Outfit'; font-weight: 700; font-size: .88rem;
+    padding: 13px; border: none; border-radius: 9px; cursor: pointer;
+    letter-spacing: .04em; transition: all .15s; display: flex;
+    align-items: center; justify-content: center; gap: 8px;
+  }
+  .gen-btn:hover { background: #c0ff6a; transform: translateY(-1px); }
+  .gen-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  /* SELECTED PREVIEW */
+  .selected-preview { display: flex; gap: 8px; }
+  .sel-chip {
+    flex: 1; height: 40px; border-radius: 8px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .65rem; letter-spacing: .06em; text-transform: uppercase;
+    font-weight: 500; transition: all .3s; position: relative; overflow: hidden;
+  }
+  .sel-chip span { position: relative; z-index: 1; mix-blend-mode: difference; color: white; }
+
+  /* RESULTS */
+  .results { display: flex; flex-direction: column; gap: 16px; }
+  .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .results-title { font-family: 'Bebas Neue'; font-size: 1.6rem; letter-spacing: .06em; }
+  .dl-btn {
+    background: var(--accent); color: #030a14; font-family: 'Outfit';
+    font-weight: 600; font-size: .78rem; padding: 9px 20px; border: none;
+    border-radius: 8px; cursor: pointer; letter-spacing: .04em;
+    transition: all .15s; display: flex; align-items: center; gap: 6px;
+  }
+  .dl-btn:hover { background: #c0ff6a; transform: translateY(-1px); }
+
+  /* PALETTE CARDS */
+  .palette-grid { display: flex; flex-direction: column; gap: 10px; }
+  .color-row {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; display: flex;
+    align-items: stretch; transition: all .2s;
+  }
+  .color-row:hover { border-color: rgba(168,255,62,.2); transform: translateX(3px); }
+  .color-swatch-large { width: 100px; flex-shrink: 0; position: relative; }
+  .color-info { flex: 1; padding: 14px 16px; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+  .color-role { font-size: .6rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .color-name { font-family: 'Bebas Neue'; font-size: 1.3rem; letter-spacing: .06em; color: var(--text); line-height: 1; }
+  .color-desc { font-size: .72rem; color: var(--muted); font-weight: 300; }
+  .color-actions { display: flex; align-items: center; gap: 8px; padding: 14px; }
+  .copy-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Outfit'; font-size: .72rem;
+    padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    transition: all .15s; letter-spacing: .04em; white-space: nowrap;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--accent); color: var(--accent); }
+
+  /* CSS EXPORT */
+  .css-export {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+  .css-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .css-title { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .css-block {
+    padding: 16px; font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: .75rem; line-height: 1.8; color: #7dd3fc;
+    background: #020810; overflow-x: auto;
+  }
+  .css-block .token-selector { color: #a8ff3e; }
+  .css-block .token-prop { color: #c4b5fd; }
+  .css-block .token-val { color: #f0ede8; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 60px 40px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .empty-icon { width: 56px; height: 56px; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; display: grid; place-items: center; }
+  .empty-title { font-family: 'Bebas Neue'; font-size: 1.4rem; letter-spacing: .06em; }
+  .empty-sub { font-size: .82rem; color: var(--muted); max-width: 280px; line-height: 1.6; font-weight: 300; }
+
+  @media (max-width: 720px) {
+    .main { grid-template-columns: 1fr; padding: 20px 16px 80px; }
+    .panel { position: static; }
+    nav, .hero { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <div class="nav-mark"><svg viewBox="0 0 18 18"><polygon points="9,1 17,5 17,13 9,17 1,13 1,5" fill="#030a14"/></svg></div>
+    <div class="nav-name">Woods<span>Digital</span></div>
+  </a>
+  <a class="nav-back" href="index.html">← All Tools</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Free Tool</div>
+  <h1>Brand <em>Palette</em><br>Generator</h1>
+  <p class="hero-sub">Pick two colors, get a complete 6-color brand palette with hex codes — ready to download or hand off to your designer.</p>
+</div>
+
+<div class="main">
+
+  <!-- CONTROLS -->
+  <div class="panel">
+
+    <div>
+      <div class="panel-section-title">Step 1 — Pick Your Primary Color</div>
+      <div class="swatch-grid" id="primary-swatches"></div>
+      <div class="custom-row" style="margin-top:14px">
+        <div class="custom-input-wrap">
+          <label>Custom</label>
+          <input type="color" id="primary-picker" value="#a8ff3e">
+          <input type="text" class="hex-input" id="primary-hex" placeholder="#a8ff3e" maxlength="7">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-section-title">Step 2 — Pick Your Secondary Color</div>
+      <div class="swatch-grid" id="secondary-swatches"></div>
+      <div class="custom-row" style="margin-top:14px">
+        <div class="custom-input-wrap">
+          <label>Custom</label>
+          <input type="color" id="secondary-picker" value="#3a7bd5">
+          <input type="text" class="hex-input" id="secondary-hex" placeholder="#3a7bd5" maxlength="7">
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-section-title">Selected Colors</div>
+      <div class="selected-preview">
+        <div class="sel-chip" id="chip-primary"><span>Primary</span></div>
+        <div class="sel-chip" id="chip-secondary"><span>Secondary</span></div>
+      </div>
+    </div>
+
+    <button class="gen-btn" id="gen-btn" onclick="generatePalette()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3z" opacity=".3"/><path d="M8 1v2a5 5 0 015 5h2A7 7 0 008 1z"><animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="1s" repeatCount="indefinite"/></path></svg>
+      Generate Palette
+    </button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#a8ff3e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12h8M12 8v8"/>
+        </svg>
+      </div>
+      <div class="empty-title">No Palette Yet</div>
+      <div class="empty-sub">Pick your primary and secondary colors on the left, then hit Generate Palette.</div>
+    </div>
+  </div>
+
+</div>
+
+<canvas id="export-canvas" style="display:none"></canvas>
+
+<script>
+// ── PRESET SWATCHES ────────────────────────────────────────────
+var PRESETS = [
+  '#e63946','#e85d04','#f4a261','#f9c74f','#90be6d','#43aa8b',
+  '#4cc9f0','#4361ee','#7209b7','#f72585','#06d6a0','#118ab2',
+  '#264653','#2a9d8f','#e9c46a','#f4a261','#e76f51','#023e8a',
+  '#6d6875','#b5838d','#ffb4a2','#1d3557','#457b9d','#a8dadc',
+  '#ffffff','#e8e8e8','#aaaaaa','#555555','#222222','#000000',
+];
+
+var primaryColor   = '#a8ff3e';
+var secondaryColor = '#3a7bd5';
+
+function buildSwatches(containerId, type) {
+  var grid = document.getElementById(containerId);
+  PRESETS.forEach(function(hex) {
+    var sw = document.createElement('div');
+    sw.className = 'swatch';
+    sw.style.background = hex;
+    sw.title = hex;
+    sw.dataset.hex = hex;
+    sw.onclick = function() { selectColor(type, hex); };
+    grid.appendChild(sw);
+  });
+}
+
+function selectColor(type, hex) {
+  if (type === 'primary') {
+    primaryColor = hex;
+    document.getElementById('primary-picker').value = hex;
+    document.getElementById('primary-hex').value = hex;
+    document.querySelectorAll('#primary-swatches .swatch').forEach(function(s) {
+      s.classList.remove('selected-primary');
+      if (s.dataset.hex === hex) { s.classList.add('selected-primary'); s.dataset.label = '1°'; }
+    });
+    document.getElementById('chip-primary').style.background = hex;
+  } else {
+    secondaryColor = hex;
+    document.getElementById('secondary-picker').value = hex;
+    document.getElementById('secondary-hex').value = hex;
+    document.querySelectorAll('#secondary-swatches .swatch').forEach(function(s) {
+      s.classList.remove('selected-secondary');
+      if (s.dataset.hex === hex) { s.classList.add('selected-secondary'); s.dataset.label = '2°'; }
+    });
+    document.getElementById('chip-secondary').style.background = hex;
+  }
+}
+
+// Color picker sync
+document.getElementById('primary-picker').oninput = function(e) {
+  primaryColor = e.target.value;
+  document.getElementById('primary-hex').value = e.target.value;
+  document.getElementById('chip-primary').style.background = e.target.value;
+};
+document.getElementById('secondary-picker').oninput = function(e) {
+  secondaryColor = e.target.value;
+  document.getElementById('secondary-hex').value = e.target.value;
+  document.getElementById('chip-secondary').style.background = e.target.value;
+};
+document.getElementById('primary-hex').oninput = function(e) {
+  var v = e.target.value; if (!/^#[0-9a-fA-F]{6}$/.test(v)) return;
+  primaryColor = v; document.getElementById('primary-picker').value = v;
+  document.getElementById('chip-primary').style.background = v;
+};
+document.getElementById('secondary-hex').oninput = function(e) {
+  var v = e.target.value; if (!/^#[0-9a-fA-F]{6}$/.test(v)) return;
+  secondaryColor = v; document.getElementById('secondary-picker').value = v;
+  document.getElementById('chip-secondary').style.background = v;
+};
+
+// ── COLOR MATH ─────────────────────────────────────────────────
+function hexToRgb(hex) {
+  var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return { r:r, g:g, b:b };
+}
+function rgbToHsl(r,g,b) {
+  r/=255; g/=255; b/=255;
+  var max=Math.max(r,g,b), min=Math.min(r,g,b), h,s,l=(max+min)/2;
+  if(max===min){h=s=0;}else{var d=max-min;s=l>.5?d/(2-max-min):d/(max+min);
+    switch(max){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break;}h/=6;}
+  return{h:h*360,s:s*100,l:l*100};
+}
+function hslToHex(h,s,l) {
+  h/=360; s/=100; l/=100;
+  var r,g,b;
+  if(s===0){r=g=b=l;}else{
+    function hue(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
+    var q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;
+    r=hue(p,q,h+1/3);g=hue(p,q,h);b=hue(p,q,h-1/3);
+  }
+  return '#'+[r,g,b].map(function(x){return Math.round(x*255).toString(16).padStart(2,'0');}).join('');
+}
+function lighten(hex, amt) {
+  var rgb=hexToRgb(hex), hsl=rgbToHsl(rgb.r,rgb.g,rgb.b);
+  return hslToHex(hsl.h, Math.max(0,hsl.s-amt*.3), Math.min(98,hsl.l+amt));
+}
+function darken(hex, amt) {
+  var rgb=hexToRgb(hex), hsl=rgbToHsl(rgb.r,rgb.g,rgb.b);
+  return hslToHex(hsl.h, Math.min(100,hsl.s+amt*.2), Math.max(2,hsl.l-amt));
+}
+function getLuminance(hex) {
+  var rgb=hexToRgb(hex);
+  var r=rgb.r/255,g=rgb.g/255,b=rgb.b/255;
+  r=r<.03928?r/12.92:Math.pow((r+.055)/1.055,2.4);
+  g=g<.03928?g/12.92:Math.pow((g+.055)/1.055,2.4);
+  b=b<.03928?b/12.92:Math.pow((b+.055)/1.055,2.4);
+  return .2126*r+.7152*g+.0722*b;
+}
+function getTextColor(hex) {
+  return getLuminance(hex) > .35 ? '#111111' : '#ffffff';
+}
+function buildPaletteColors(primary, secondary) {
+  var pRgb=hexToRgb(primary), pHsl=rgbToHsl(pRgb.r,pRgb.g,pRgb.b);
+  var sRgb=hexToRgb(secondary), sHsl=rgbToHsl(sRgb.r,sRgb.g,sRgb.b);
+  return [
+    { role:'Primary',   name:'Brand Primary',    hex:primary,               desc:'Main brand color — buttons, links, highlights' },
+    { role:'Secondary', name:'Brand Secondary',   hex:secondary,             desc:'Supporting color — accents, hover states' },
+    { role:'Dark',      name:'Deep Background',   hex:hslToHex(pHsl.h,pHsl.s*.3,8),  desc:'Near-black for text and dark backgrounds' },
+    { role:'Light',     name:'Soft Background',   hex:hslToHex(pHsl.h,pHsl.s*.15,96), desc:'Near-white for light sections and cards' },
+    { role:'Neutral',   name:'Mid Gray',          hex:hslToHex(sHsl.h,sHsl.s*.15,52), desc:'Borders, dividers, subtle UI elements' },
+    { role:'Accent',    name:'Highlight',         hex:lighten(secondary,22), desc:'Lighter accent for backgrounds and badges' },
+  ];
+}
+
+// ── GENERATE ──────────────────────────────────────────────────
+function generatePalette() {
+  var colors = buildPaletteColors(primaryColor, secondaryColor);
+  var results = document.getElementById('results');
+
+  var cssVars = colors.map(function(c) {
+    return '  --color-'+c.role.toLowerCase()+': '+c.hex+';';
+  }).join('\n');
+
+  var html = '<div class="results-header">'
+    + '<div class="results-title">Your Brand Palette</div>'
+    + '<button class="dl-btn" onclick="downloadPNG()">'
+    + '<svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/><rect x="2" y="13" width="12" height="1.5" rx=".75"/></svg>'
+    + 'Download PNG</button></div>'
+    + '<div class="palette-grid">';
+
+  colors.forEach(function(c) {
+    var tc = getTextColor(c.hex);
+    html += '<div class="color-row">'
+      + '<div class="color-swatch-large" style="background:'+c.hex+'"></div>'
+      + '<div class="color-info">'
+      + '<div class="color-role">'+c.role+'</div>'
+      + '<div class="color-name">'+c.name+'</div>'
+      + '<div class="color-desc">'+c.desc+'</div>'
+      + '</div>'
+      + '<div class="color-actions">'
+      + '<button class="copy-btn" onclick="copyHex(this,\''+c.hex+'\')">'+c.hex+'</button>'
+      + '</div>'
+      + '</div>';
+  });
+
+  html += '</div>'
+    + '<div class="css-export">'
+    + '<div class="css-header"><div class="css-title">CSS Variables</div>'
+    + '<button class="copy-btn" id="copy-css-btn" onclick="copyCSS()">Copy All</button></div>'
+    + '<div class="css-block"><span class="token-selector">:root</span> {\n'
+    + colors.map(function(c){ return '  <span class="token-prop">--color-'+c.role.toLowerCase()+'</span>: <span class="token-val">'+c.hex+'</span>;'; }).join('\n')
+    + '\n}</div></div>';
+
+  results.innerHTML = html;
+
+  // store for download
+  window._paletteColors = colors;
+}
+
+function copyHex(btn, hex) {
+  navigator.clipboard.writeText(hex).then(function() {
+    var orig = btn.textContent; btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function copyCSS() {
+  if (!window._paletteColors) return;
+  var css = ':root {\n' + window._paletteColors.map(function(c){ return '  --color-'+c.role.toLowerCase()+': '+c.hex+';'; }).join('\n') + '\n}';
+  navigator.clipboard.writeText(css).then(function() {
+    var btn = document.getElementById('copy-css-btn');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy All'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+// ── PNG DOWNLOAD ───────────────────────────────────────────────
+function downloadPNG() {
+  var colors = window._paletteColors;
+  if (!colors) return;
+
+  var swW = 200, swH = 120, padding = 32, labelH = 80;
+  var cols = 3, rows = 2;
+  var W = cols * swW + (cols + 1) * padding;
+  var H = rows * (swH + labelH) + (rows + 1) * padding + 80;
+
+  var canvas = document.getElementById('export-canvas');
+  canvas.width = W; canvas.height = H;
+  var ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#030a14';
+  ctx.fillRect(0, 0, W, H);
+
+  // Header
+  ctx.fillStyle = '#a8ff3e';
+  ctx.font = 'bold 13px sans-serif';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('BRAND PALETTE', padding, 36);
+  ctx.fillStyle = '#4a6080';
+  ctx.font = '11px sans-serif';
+  ctx.fillText('Generated by Woods Digital Solutions • woodsdigitalsolutions.com', padding, 54);
+
+  colors.forEach(function(c, i) {
+    var col = i % cols, row = Math.floor(i / cols);
+    var x = padding + col * (swW + padding);
+    var y = 80 + padding + row * (swH + labelH + padding);
+
+    // Swatch
+    ctx.fillStyle = c.hex;
+    ctx.beginPath();
+    ctx.roundRect(x, y, swW, swH, 10);
+    ctx.fill();
+
+    // Role label
+    ctx.fillStyle = '#4a6080';
+    ctx.font = '600 9px sans-serif';
+    ctx.fillText(c.role.toUpperCase(), x, y + swH + 18);
+
+    // Color name
+    ctx.fillStyle = '#eef4ff';
+    ctx.font = '600 13px sans-serif';
+    ctx.fillText(c.name, x, y + swH + 36);
+
+    // Hex
+    ctx.fillStyle = '#a8ff3e';
+    ctx.font = '500 12px monospace';
+    ctx.fillText(c.hex.toUpperCase(), x, y + swH + 54);
+  });
+
+  var link = document.createElement('a');
+  link.download = 'brand-palette.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+buildSwatches('primary-swatches', 'primary');
+buildSwatches('secondary-swatches', 'secondary');
+document.getElementById('chip-primary').style.background = primaryColor;
+document.getElementById('chip-secondary').style.background = secondaryColor;
+document.getElementById('primary-picker').value = primaryColor;
+document.getElementById('secondary-picker').value = secondaryColor;
+document.getElementById('primary-hex').value = primaryColor;
+document.getElementById('secondary-hex').value = secondaryColor;
+</script>
+</body>
+</html>
