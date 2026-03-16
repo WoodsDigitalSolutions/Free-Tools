@@ -6,7 +6,7 @@
 <title>Logo Creator — Woods Digital</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Space+Mono:wght@700&family=Raleway:wght@800&family=Josefin+Sans:wght@700&family=Libre+Baskerville:wght@700&family=Exo+2:wght@800&family=DM+Serif+Display&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0e0e10; --surface:#17171c; --border:#2a2a35; --text:#f0ede8; --muted:#5c5c72; --accent:#e8c547; }
+  :root { --bg:#030a14; --surface:#071020; --border:#112240; --text:#eef4ff; --muted:#4a6080; --accent:#a8ff3e; }
   *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
   body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; font-weight:400; height:100vh; display:grid; grid-template-columns:360px 1fr; grid-template-rows:54px 1fr; overflow:hidden; }
   header { grid-column:1/-1; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 22px; gap:10px; }
@@ -28,13 +28,13 @@
   .icon-grid::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
   .icon-btn { aspect-ratio:1; background:var(--bg); border:1.5px solid var(--border); border-radius:7px; cursor:pointer; display:grid; place-items:center; transition:all .15s; padding:7px; }
   .icon-btn:hover { border-color:var(--accent); background:#1a1a22; }
-  .icon-btn.active { border-color:var(--accent); background:#2a2510; }
+  .icon-btn.active { border-color:var(--accent); background:#071f08; }
   .icon-btn svg { width:100%; height:100%; overflow:visible; }
 
   .layout-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
   .layout-btn { aspect-ratio:1.3; background:var(--bg); border:1.5px solid var(--border); border-radius:7px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; transition:all .15s; padding:5px; }
   .layout-btn:hover { border-color:var(--accent); }
-  .layout-btn.active { border-color:var(--accent); background:#2a2510; }
+  .layout-btn.active { border-color:var(--accent); background:#071f08; }
   .dot { width:9px; height:9px; border-radius:2px; background:var(--muted); }
   .line { height:3px; border-radius:2px; background:var(--muted); }
   .layout-btn.active .dot, .layout-btn.active .line { background:var(--accent); }
@@ -52,7 +52,7 @@
   .font-btn { background:var(--bg); border:1.5px solid var(--border); border-radius:7px; padding:9px 8px; cursor:pointer; text-align:center; color:var(--text); font-size:1rem; transition:all .15s; line-height:1.1; }
   .font-btn small { display:block; font-family:'Outfit',sans-serif; font-size:.56rem; color:var(--muted); margin-top:2px; letter-spacing:.06em; text-transform:uppercase; }
   .font-btn:hover { border-color:var(--accent); }
-  .font-btn.active { border-color:var(--accent); background:#2a2510; }
+  .font-btn.active { border-color:var(--accent); background:#071f08; }
 
   .slider-row { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
   .slider-row label { font-size:.7rem; color:var(--muted); width:76px; flex-shrink:0; }
