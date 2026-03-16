@@ -93,6 +93,21 @@
   .modal-cta:hover { background:#c0ff6a; }
   .modal-dismiss { font-size:.78rem; color:var(--muted); cursor:pointer; background:none; border:none; font-family:'Outfit',sans-serif; transition:color .15s; }
   .modal-dismiss:hover { color:#fff; }
+
+  @media (max-width:768px) {
+    body { grid-template-columns:1fr; grid-template-rows:54px auto 1fr; overflow-x:hidden; overflow-y:auto; height:auto; min-height:100vh; }
+    header { padding:0 16px; }
+    .panel { border-right:none; border-bottom:1px solid var(--border); padding:18px 16px; max-height:none; }
+    .icon-grid { grid-template-columns:repeat(6,1fr); max-height:160px; }
+    .layout-grid { grid-template-columns:repeat(4,1fr); }
+    .palette-grid { grid-template-columns:repeat(2,1fr); max-height:140px; }
+    .font-grid { grid-template-columns:1fr 1fr; }
+    .preview-area { padding:20px 16px 60px; }
+    .logo-canvas { min-width:auto; width:100%; max-width:100vw; padding:32px 16px; min-height:200px; }
+    .dl-btn { width:100%; justify-content:center; }
+    .cta-bar { flex-direction:column; gap:10px; text-align:center; }
+    .modal-card { padding:28px 20px; }
+  }
 </style>
 </head>
 <body>

@@ -186,10 +186,17 @@
   .empty-title { font-family: 'Bebas Neue'; font-size: 1.4rem; letter-spacing: .06em; }
   .empty-sub { font-size: .82rem; color: var(--muted); max-width: 280px; line-height: 1.6; font-weight: 300; }
 
-  @media (max-width: 720px) {
-    .main { grid-template-columns: 1fr; padding: 20px 16px 80px; }
+  @media (max-width: 768px) {
+    body { overflow-x: hidden; }
+    nav { padding: 0 16px; }
+    .hero { padding: 40px 16px; }
+    h1 { font-size: clamp(2rem, 6vw, 3rem); }
+    .main { grid-template-columns: 1fr; padding: 20px 16px 60px; }
     .panel { position: static; }
-    nav, .hero { padding-left: 20px; padding-right: 20px; }
+    .gen-btn, .dl-btn { width: 100%; justify-content: center; }
+    .results-header { flex-wrap: wrap; gap: 12px; }
+    .cta-bar { flex-direction: column; gap: 10px; text-align: center; }
+    .modal-card { padding: 28px 20px; }
   }
 </style>
 </head>
