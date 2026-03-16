@@ -118,6 +118,10 @@
     transition: all .15s; display: flex; align-items: center; gap: 6px;
   }
   .dl-btn:hover { background: #c0ff6a; transform: translateY(-1px); }
+  .cta-bar { background:#0b1a2e; border-left:4px solid var(--accent); border-radius:10px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:8px; }
+  .cta-bar p { font-size:.82rem; color:#fff; margin:0; line-height:1.4; }
+  .cta-bar a { font-size:.82rem; color:var(--accent); text-decoration:none; font-weight:600; white-space:nowrap; transition:opacity .15s; }
+  .cta-bar a:hover { opacity:.8; }
 
   /* PALETTE CARDS */
   .palette-grid { display: flex; flex-direction: column; gap: 10px; }
@@ -418,7 +422,11 @@ function generatePalette() {
     + '<button class="copy-btn" id="copy-css-btn" onclick="copyCSS()">Copy All</button></div>'
     + '<div class="css-block"><span class="token-selector">:root</span> {\n'
     + colors.map(function(c){ return '  <span class="token-prop">--color-'+c.role.toLowerCase()+'</span>: <span class="token-val">'+c.hex+'</span>;'; }).join('\n')
-    + '\n}</div></div>';
+    + '\n}</div></div>'
+    + '<div class="cta-bar">'
+    + '<p>Great colors are the foundation. Ready to put them to work on a real website?</p>'
+    + '<a href="https://woodsdigitalsolutions.com/connect/" target="_blank">Let\'s Talk →</a>'
+    + '</div>';
 
   results.innerHTML = html;
 

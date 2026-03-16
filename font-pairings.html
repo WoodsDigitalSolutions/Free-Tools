@@ -90,6 +90,10 @@
     display: flex; align-items: center; justify-content: center; gap: 7px;
   }
   .dl-btn:hover { background: #c0ff6a; transform: translateY(-1px); }
+  .cta-bar { background:#0b1a2e; border-left:4px solid var(--accent); border-radius:10px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .cta-bar p { font-size:.82rem; color:#fff; margin:0; line-height:1.4; }
+  .cta-bar a { font-size:.82rem; color:var(--accent); text-decoration:none; font-weight:600; white-space:nowrap; transition:opacity .15s; }
+  .cta-bar a:hover { opacity:.8; }
   .copy-btn {
     flex: 1; background: var(--surface2); border: 1px solid var(--border);
     color: var(--text); font-family: 'Outfit'; font-weight: 600; font-size: .95rem;
@@ -235,6 +239,11 @@
         Download PNG
       </button>
       <button class="copy-btn" id="copy-embed-btn" onclick="copyEmbed()">Copy Embed</button>
+    </div>
+
+    <div class="cta-bar">
+      <p>Perfect typography chosen. Now let's build something worth reading.</p>
+      <a href="https://woodsdigitalsolutions.com/connect/" target="_blank">Let's Talk →</a>
     </div>
 
   </div>
