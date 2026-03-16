@@ -59,7 +59,7 @@
   input[type="range"] { flex:1; accent-color:var(--accent); height:3px; cursor:pointer; }
   .val { font-size:.7rem; color:var(--text); width:26px; text-align:right; }
 
-  .preview-area { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:32px; position:relative; background:radial-gradient(circle at 60% 40%,#1a1a28 0%,#0e0e10 70%); overflow:hidden; }
+  .preview-area { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; padding:48px; position:relative; background:radial-gradient(circle at 60% 40%,#1a1a28 0%,#0e0e10 70%); overflow:hidden; }
   .bg-toggle { position:absolute; top:18px; right:18px; display:flex; gap:5px; }
   .bg-opt { width:26px; height:26px; border-radius:5px; border:2px solid var(--border); cursor:pointer; transition:border-color .15s; }
   .bg-opt:hover,.bg-opt.active { border-color:var(--accent); }
@@ -67,15 +67,15 @@
   .bg-opt.light { background:#f5f5f0; }
   .bg-opt.trans { background:repeating-conic-gradient(#aaa 0% 25%,#fff 0% 50%) 0 0/10px 10px; }
 
-  .logo-canvas { padding:44px 56px; border-radius:14px; transition:background .3s; display:flex; align-items:center; justify-content:center; min-width:320px; min-height:180px; }
+  .logo-canvas { padding:64px 80px; border-radius:18px; transition:background .3s; display:flex; align-items:center; justify-content:center; min-width:480px; min-height:280px; }
   .logo-canvas.bg-dark { background:#111; box-shadow:0 20px 60px rgba(0,0,0,.6); }
   .logo-canvas.bg-light { background:#f5f5f0; box-shadow:0 20px 60px rgba(0,0,0,.4); }
   .logo-canvas.bg-trans { background:repeating-conic-gradient(#aaa 0% 25%,#fff 0% 50%) 0 0/12px 12px; }
 
-  .preview-label { font-size:.62rem; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
-  .dl-btn { background:var(--accent); color:#111; font-family:'Outfit',sans-serif; font-weight:600; font-size:.8rem; padding:10px 26px; border:none; border-radius:8px; cursor:pointer; letter-spacing:.04em; transition:all .15s; display:flex; align-items:center; gap:7px; }
+  .preview-label { font-size:.85rem; color:var(--muted); letter-spacing:.14em; text-transform:uppercase; }
+  .dl-btn { background:var(--accent); color:#111; font-family:'Outfit',sans-serif; font-weight:600; font-size:1rem; padding:14px 36px; border:none; border-radius:10px; cursor:pointer; letter-spacing:.04em; transition:all .15s; display:flex; align-items:center; gap:9px; }
   .dl-btn:hover { background:#f5d35a; transform:translateY(-1px); }
-  .hint { font-size:.65rem; color:var(--muted); text-align:center; max-width:280px; line-height:1.6; }
+  .hint { font-size:.82rem; color:var(--muted); text-align:center; max-width:360px; line-height:1.6; }
 </style>
 </head>
 <body>
@@ -137,7 +137,7 @@
   <div class="preview-label">Live Preview</div>
   <div class="logo-canvas bg-dark" id="logo-canvas"></div>
   <button class="dl-btn" onclick="downloadSVG()">
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/><rect x="2" y="13" width="12" height="1.5" rx=".75"/></svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/><rect x="2" y="13" width="12" height="1.5" rx=".75"/></svg>
     Download SVG
   </button>
   <p class="hint">Downloads as scalable SVG — works at any size from favicon to billboard.</p>
