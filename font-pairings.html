@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Pairings — Woods Digital Solutions</title>
+<style>
+  :root {
+    --bg: #030a14; --surface: #071020; --surface2: #0b1828;
+    --border: #112240; --text: #eef4ff; --muted: #a0b4c8;
+    --accent: #a8ff3e; --accent-dim: rgba(168,255,62,.1);
+    --accent-border: rgba(168,255,62,.25);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(3,10,20,.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 60px;
+  }
+  .nav-logo { display: flex; align-items: center; text-decoration: none; }
+  .nav-logo img { height: 36px; }
+  .nav-back { font-size: .78rem; color: #ffffff; text-decoration: none; transition: color .2s; letter-spacing: .04em; }
+  .nav-back:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero { text-align: center; padding: 56px 40px 36px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim); border: 1px solid var(--accent-border);
+    border-radius: 20px; padding: 4px 14px; font-size: .68rem;
+    font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 18px;
+  }
+  .badge::before { content:''; width:5px; height:5px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.8rem,6vw,5rem); letter-spacing:.04em; line-height:.95; margin-bottom:12px; }
+  h1 em { font-style:normal; color:var(--accent); }
+  .hero-sub { font-size:.95rem; color:var(--muted); max-width:440px; margin:0 auto; line-height:1.7; font-weight:300; }
+
+  /* MAIN */
+  .main { max-width: 1100px; margin: 0 auto; padding: 36px 40px 100px; display: grid; grid-template-columns: 320px 1fr; gap: 28px; align-items: start; }
+
+  /* PANEL */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 20px; position: sticky; top: 76px; }
+  .field-label { font-size: .65rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; display: block; }
+
+  /* SELECTS */
+  select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'Outfit', sans-serif;
+    font-size: .88rem; padding: 10px 12px; outline: none;
+    transition: border-color .2s; cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a0b4c8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    padding-right: 32px;
+  }
+  select:focus { border-color: var(--accent); }
+  select option { background: #071020; }
+
+  /* TEXT INPUTS */
+  input[type="text"] {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'Outfit', sans-serif;
+    font-size: .88rem; padding: 10px 12px; outline: none; transition: border-color .2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  /* SIZE SLIDER */
+  .slider-row { display: flex; align-items: center; gap: 10px; }
+  .slider-row input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+  .slider-val { font-size: .75rem; color: var(--text); width: 36px; text-align: right; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; }
+  .dl-btn {
+    flex: 1; background: var(--accent); color: #030a14;
+    font-family: 'Outfit'; font-weight: 700; font-size: 1rem;
+    padding: 12px; border: none; border-radius: 9px; cursor: pointer;
+    letter-spacing: .04em; transition: all .15s;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+  }
+  .dl-btn:hover { background: #c0ff6a; transform: translateY(-1px); }
+  .copy-btn {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Outfit'; font-weight: 600; font-size: .95rem;
+    padding: 12px; border-radius: 9px; cursor: pointer;
+    letter-spacing: .04em; transition: all .15s;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .copy-btn.copied { border-color: var(--accent); color: var(--accent); }
+
+  /* PREVIEW AREA */
+  .preview-wrap { display: flex; flex-direction: column; gap: 16px; }
+  .preview-label-row {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .preview-section-title { font-size: .65rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+  /* BG TOGGLE */
+  .bg-toggle { display: flex; gap: 5px; }
+  .bg-opt { width: 24px; height: 24px; border-radius: 5px; border: 2px solid var(--border); cursor: pointer; transition: border-color .15s; }
+  .bg-opt:hover, .bg-opt.active { border-color: var(--accent); }
+  .bg-opt.dark { background: #111; }
+  .bg-opt.light { background: #f5f5f0; }
+
+  /* PREVIEW CANVAS AREA */
+  .preview-card {
+    border-radius: 14px; padding: 52px 48px;
+    transition: background .3s; min-height: 400px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .preview-card.bg-dark { background: #111; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .preview-card.bg-light { background: #f5f5f0; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+
+  .preview-tag {
+    font-size: .58rem; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; margin-bottom: 10px;
+    opacity: .5;
+  }
+  .preview-heading {
+    line-height: 1.1; margin-bottom: 28px; word-break: break-word;
+    transition: all .2s;
+  }
+  .preview-divider { height: 2px; width: 48px; background: var(--accent); margin-bottom: 24px; border-radius: 1px; }
+  .preview-body { line-height: 1.75; word-break: break-word; transition: all .2s; }
+
+  /* FONT INFO STRIP */
+  .font-info-strip {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+  .font-info-item {}
+  .font-info-role { font-size: .58rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .font-info-name { font-size: 1rem; color: var(--text); font-weight: 600; }
+  .font-info-meta { font-size: .7rem; color: var(--muted); margin-top: 2px; }
+
+  /* EMBED CODE */
+  .embed-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+  .embed-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+  }
+  .embed-title { font-size: .62rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .embed-code {
+    padding: 14px 16px; font-family: 'Courier New', monospace;
+    font-size: .72rem; color: #7dd3fc; background: #020810;
+    overflow-x: auto; line-height: 1.6; white-space: pre;
+  }
+
+  @media (max-width: 720px) {
+    .main { grid-template-columns: 1fr; padding: 20px 16px 80px; }
+    .panel { position: static; }
+    nav, .hero { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="WDSLogo-3b.png" height="36" alt="Woods Digital Solutions">
+  </a>
+  <a class="nav-back" href="index.html">← All Tools</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Free Tool</div>
+  <h1>Font <em>Pairings</em></h1>
+  <p class="hero-sub">Pick a heading and body font, enter your text, and preview the combination live. Get the Google Fonts embed code ready to drop into Divi.</p>
+</div>
+
+<div class="main">
+
+  <!-- CONTROLS -->
+  <div class="panel">
+
+    <div>
+      <label class="field-label">Heading Font</label>
+      <select id="heading-font" onchange="updatePreview()"></select>
+    </div>
+
+    <div>
+      <label class="field-label">Heading Text</label>
+      <input type="text" id="heading-text" value="Your Business Name" oninput="updatePreview()">
+    </div>
+
+    <div>
+      <label class="field-label">Heading Size</label>
+      <div class="slider-row">
+        <input type="range" id="heading-size" min="24" max="96" value="52" oninput="updatePreview()">
+        <span class="slider-val" id="heading-size-val">52px</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <label class="field-label">Body Font</label>
+      <select id="body-font" onchange="updatePreview()"></select>
+    </div>
+
+    <div>
+      <label class="field-label">Body Text</label>
+      <input type="text" id="body-text" value="Your tagline, description, or sample body copy goes here. Choose a font that feels right for your brand." oninput="updatePreview()">
+    </div>
+
+    <div>
+      <label class="field-label">Body Size</label>
+      <div class="slider-row">
+        <input type="range" id="body-size" min="12" max="28" value="17" oninput="updatePreview()">
+        <span class="slider-val" id="body-size-val">17px</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="btn-row">
+      <button class="dl-btn" onclick="downloadPNG()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/><rect x="2" y="13" width="12" height="1.5" rx=".75"/></svg>
+        Download PNG
+      </button>
+      <button class="copy-btn" id="copy-embed-btn" onclick="copyEmbed()">Copy Embed</button>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-wrap">
+
+    <div class="preview-label-row">
+      <div class="preview-section-title">Live Preview</div>
+      <div class="bg-toggle">
+        <div class="bg-opt dark active" data-bg="bg-dark" onclick="setBg(this)" title="Dark"></div>
+        <div class="bg-opt light" data-bg="bg-light" onclick="setBg(this)" title="Light"></div>
+      </div>
+    </div>
+
+    <div class="preview-card bg-dark" id="preview-card">
+      <div class="preview-tag" id="preview-heading-tag" style="color:#a0b4c8">Heading Font</div>
+      <div class="preview-heading" id="preview-heading">Your Business Name</div>
+      <div class="preview-divider"></div>
+      <div class="preview-tag" id="preview-body-tag" style="color:#a0b4c8">Body Font</div>
+      <div class="preview-body" id="preview-body">Your tagline, description, or sample body copy goes here. Choose a font that feels right for your brand.</div>
+    </div>
+
+    <div class="font-info-strip">
+      <div class="font-info-item">
+        <div class="font-info-role">Heading</div>
+        <div class="font-info-name" id="info-heading-name">—</div>
+        <div class="font-info-meta">Display / Title use</div>
+      </div>
+      <div class="font-info-item">
+        <div class="font-info-role">Body</div>
+        <div class="font-info-name" id="info-body-name">—</div>
+        <div class="font-info-meta">Paragraph / UI use</div>
+      </div>
+    </div>
+
+    <div class="embed-box">
+      <div class="embed-header">
+        <div class="embed-title">Google Fonts / Divi Embed Code</div>
+      </div>
+      <div class="embed-code" id="embed-code"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<canvas id="export-canvas" style="display:none"></canvas>
+
+<script>
+var HEADING_FONTS = [
+  'Bebas Neue','Playfair Display','Raleway','Josefin Sans','Oswald',
+  'Montserrat','Cormorant Garamond','DM Serif Display','Exo 2','Cinzel',
+  'Abril Fatface','Fjalla One','Righteous','Spectral','Alfa Slab One'
+];
+var BODY_FONTS = [
+  'Lato','Open Sans','Nunito','Source Sans 3','Merriweather',
+  'Libre Baskerville','Outfit','Roboto','PT Sans','Noto Sans',
+  'Mulish','Cabin','Karla','Questrial','Hind'
+];
+
+var loadedFonts = {};
+
+function buildDropdown(id, fonts, defaultIndex) {
+  var sel = document.getElementById(id);
+  fonts.forEach(function(f, i) {
+    var opt = document.createElement('option');
+    opt.value = f; opt.textContent = f;
+    if (i === defaultIndex) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function loadFont(family) {
+  if (loadedFonts[family]) return;
+  loadedFonts[family] = true;
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(family) + ':wght@400;700&display=swap';
+  document.head.appendChild(link);
+}
+
+function getSelected() {
+  return {
+    hFont: document.getElementById('heading-font').value,
+    bFont: document.getElementById('body-font').value,
+    hText: document.getElementById('heading-text').value || 'Your Business Name',
+    bText: document.getElementById('body-text').value || 'Sample body copy goes here.',
+    hSize: document.getElementById('heading-size').value,
+    bSize: document.getElementById('body-size').value,
+  };
+}
+
+function updatePreview() {
+  var s = getSelected();
+  loadFont(s.hFont); loadFont(s.bFont);
+
+  document.getElementById('heading-size-val').textContent = s.hSize + 'px';
+  document.getElementById('body-size-val').textContent = s.bSize + 'px';
+
+  var hEl = document.getElementById('preview-heading');
+  hEl.style.fontFamily = "'" + s.hFont + "', serif";
+  hEl.style.fontSize = s.hSize + 'px';
+  hEl.textContent = s.hText;
+
+  var bEl = document.getElementById('preview-body');
+  bEl.style.fontFamily = "'" + s.bFont + "', sans-serif";
+  bEl.style.fontSize = s.bSize + 'px';
+  bEl.textContent = s.bText;
+
+  document.getElementById('info-heading-name').textContent = s.hFont;
+  document.getElementById('info-heading-name').style.fontFamily = "'" + s.hFont + "'";
+  document.getElementById('info-body-name').textContent = s.bFont;
+  document.getElementById('info-body-name').style.fontFamily = "'" + s.bFont + "'";
+
+  // Embed code
+  var hSlug = s.hFont.replace(/ /g, '+');
+  var bSlug = s.bFont.replace(/ /g, '+');
+  var embed = '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+    + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+    + '<link href="https://fonts.googleapis.com/css2?family=' + hSlug + ':wght@400;700&family=' + bSlug + ':wght@400;700&display=swap" rel="stylesheet">';
+  document.getElementById('embed-code').textContent = embed;
+}
+
+function setBg(btn) {
+  var card = document.getElementById('preview-card');
+  card.className = 'preview-card ' + btn.dataset.bg;
+  document.querySelectorAll('.bg-opt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+
+  // Flip text colors for light bg
+  var isLight = btn.dataset.bg === 'bg-light';
+  document.getElementById('preview-heading').style.color = isLight ? '#111' : '#eef4ff';
+  document.getElementById('preview-body').style.color = isLight ? '#333' : '#a0b4c8';
+  document.getElementById('preview-heading-tag').style.color = isLight ? '#888' : '#a0b4c8';
+  document.getElementById('preview-body-tag').style.color = isLight ? '#888' : '#a0b4c8';
+  document.querySelector('.preview-divider').style.background = isLight ? '#111' : '#a8ff3e';
+}
+
+function copyEmbed() {
+  var code = document.getElementById('embed-code').textContent;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.getElementById('copy-embed-btn');
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy Embed'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function downloadPNG() {
+  var s = getSelected();
+  var W = 900, H = 520, pad = 56;
+  var canvas = document.getElementById('export-canvas');
+  canvas.width = W; canvas.height = H;
+  var ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#030a14';
+  ctx.fillRect(0, 0, W, H);
+
+  // Top accent line
+  ctx.fillStyle = '#a8ff3e';
+  ctx.fillRect(0, 0, W, 4);
+
+  // Header
+  ctx.fillStyle = '#a8ff3e';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.fillText('FONT PAIRING', pad, 36);
+  ctx.fillStyle = '#4a6080';
+  ctx.font = '10px sans-serif';
+  ctx.fillText('Generated by Woods Digital Solutions • woodsdigitalsolutions.com', pad, 52);
+
+  // Heading font label
+  ctx.fillStyle = '#4a6080';
+  ctx.font = '600 10px sans-serif';
+  ctx.fillText('HEADING — ' + s.hFont.toUpperCase(), pad, 96);
+
+  // Heading text
+  var hSize = Math.min(parseInt(s.hSize), 72);
+  ctx.fillStyle = '#eef4ff';
+  ctx.font = '700 ' + hSize + 'px "' + s.hFont + '", serif';
+  ctx.fillText(s.hText, pad, 96 + hSize);
+
+  // Divider
+  ctx.fillStyle = '#a8ff3e';
+  ctx.fillRect(pad, 96 + hSize + 18, 44, 3);
+
+  // Body font label
+  var bodyY = 96 + hSize + 46;
+  ctx.fillStyle = '#4a6080';
+  ctx.font = '600 10px sans-serif';
+  ctx.fillText('BODY — ' + s.bFont.toUpperCase(), pad, bodyY);
+
+  // Body text — wrap it
+  var bSize = Math.min(parseInt(s.bSize), 20);
+  ctx.fillStyle = '#a0b4c8';
+  ctx.font = bSize + 'px "' + s.bFont + '", sans-serif';
+  var words = s.bText.split(' ');
+  var line = '', lines = [], maxW = W - pad * 2;
+  words.forEach(function(w) {
+    var test = line + (line ? ' ' : '') + w;
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+    else line = test;
+  });
+  if (line) lines.push(line);
+  lines.slice(0, 3).forEach(function(l, i) {
+    ctx.fillText(l, pad, bodyY + bSize + 6 + i * (bSize + 6));
+  });
+
+  // Footer
+  ctx.fillStyle = '#112240';
+  ctx.fillRect(0, H - 36, W, 36);
+  ctx.fillStyle = '#4a6080';
+  ctx.font = '10px sans-serif';
+  ctx.fillText(s.hFont + '  +  ' + s.bFont, pad, H - 14);
+  ctx.textAlign = 'right';
+  ctx.fillText('woodsdigitalsolutions.com', W - pad, H - 14);
+
+  var link = document.createElement('a');
+  link.download = (s.hFont + '-' + s.bFont).toLowerCase().replace(/ /g,'-') + '-pairing.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// Init
+buildDropdown('heading-font', HEADING_FONTS, 0);
+buildDropdown('body-font', BODY_FONTS, 0);
+
+// Load Outfit for UI
+var uiLink = document.createElement('link');
+uiLink.rel = 'stylesheet';
+uiLink.href = 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&display=swap';
+document.head.appendChild(uiLink);
+
+updatePreview();
+</script>
+</body>
+</html>
