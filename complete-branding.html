@@ -122,6 +122,17 @@
   .dl-btn.dark-variant{background:var(--surface2);border:1px solid var(--border);color:var(--text);}
   .dl-btn.dark-variant:hover{border-color:var(--accent);color:var(--accent);background:var(--surface2);transform:translateY(-1px);}
 
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;}
+  .modal-overlay.active{opacity:1;visibility:visible;}
+  .modal-card{background:#071020;border-top:4px solid var(--accent);border-radius:14px;padding:40px;max-width:480px;width:90%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .modal-card img{height:36px;}
+  .modal-card h2{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);letter-spacing:.04em;margin:0;}
+  .modal-card p{font-size:.9rem;color:#fff;line-height:1.7;margin:0;}
+  .modal-cta{display:block;width:100%;padding:14px;background:var(--accent);color:#071020;font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem;text-decoration:none;border-radius:10px;letter-spacing:.03em;transition:background .15s;text-align:center;}
+  .modal-cta:hover{background:#c0ff6a;}
+  .modal-dismiss{font-size:.78rem;color:var(--muted);cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;transition:color .15s;}
+  .modal-dismiss:hover{color:#fff;}
+
   /* BRAND SUMMARY */
   .brand-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:24px;}
   .summary-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.06em;margin-bottom:20px;}
@@ -896,6 +907,11 @@ function finishCanvas(ctx,W,H,pad,isDark,textSub,canvas,mode){
   link.download=(B.name||'brand').toLowerCase().replace(/\s+/g,'-')+'-style-guide-'+mode+'.png';
   link.href=canvas.toDataURL('image/png');
   link.click();
+  document.getElementById('dl-modal').classList.add('active');
+}
+
+function closeModal(){
+  document.getElementById('dl-modal').classList.remove('active');
 }
 
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
@@ -916,5 +932,16 @@ buildRecPairs();
 buildLogoIcons();
 buildLogoLayouts();
 </script>
+
+<div class="modal-overlay" id="dl-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card">
+    <img src="WDSLogo-3b.png" alt="Woods Digital Solutions">
+    <h2>Your Brand Kit is Downloading!</h2>
+    <p>You now have colors, fonts, and a wordmark — the foundation of a real brand. Let Woods Digital Solutions build the website that brings it all together.</p>
+    <a class="modal-cta" href="https://woodsdigitalsolutions.com/connect/" target="_blank">Let's Build My Website →</a>
+    <button class="modal-dismiss" onclick="closeModal()">No thanks, I'm just browsing</button>
+  </div>
+</div>
+
 </body>
 </html>

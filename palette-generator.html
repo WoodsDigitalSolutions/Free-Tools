@@ -123,6 +123,17 @@
   .cta-bar a { font-size:.82rem; color:var(--accent); text-decoration:none; font-weight:600; white-space:nowrap; transition:opacity .15s; }
   .cta-bar a:hover { opacity:.8; }
 
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; visibility:hidden; transition:opacity .25s, visibility .25s; }
+  .modal-overlay.active { opacity:1; visibility:visible; }
+  .modal-card { background:#071020; border-top:4px solid var(--accent); border-radius:14px; padding:40px; max-width:480px; width:90%; text-align:center; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .modal-card img { height:36px; }
+  .modal-card h2 { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--accent); letter-spacing:.04em; margin:0; }
+  .modal-card p { font-size:.9rem; color:#fff; line-height:1.7; margin:0; }
+  .modal-cta { display:block; width:100%; padding:14px; background:var(--accent); color:#071020; font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem; text-decoration:none; border-radius:10px; letter-spacing:.03em; transition:background .15s; text-align:center; }
+  .modal-cta:hover { background:#c0ff6a; }
+  .modal-dismiss { font-size:.78rem; color:var(--muted); cursor:pointer; background:none; border:none; font-family:'Outfit',sans-serif; transition:color .15s; }
+  .modal-dismiss:hover { color:#fff; }
+
   /* PALETTE CARDS */
   .palette-grid { display: flex; flex-direction: column; gap: 10px; }
   .color-row {
@@ -521,6 +532,11 @@ function downloadPNG() {
   link.download = 'brand-palette.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
+  document.getElementById('dl-modal').classList.add('active');
+}
+
+function closeModal(){
+  document.getElementById('dl-modal').classList.remove('active');
 }
 
 // ── INIT ───────────────────────────────────────────────────────
@@ -533,5 +549,16 @@ document.getElementById('secondary-picker').value = secondaryColor;
 document.getElementById('primary-hex').value = primaryColor;
 document.getElementById('secondary-hex').value = secondaryColor;
 </script>
+
+<div class="modal-overlay" id="dl-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card">
+    <img src="WDSLogo-3b.png" alt="Woods Digital Solutions">
+    <h2>Your Color Palette is Downloading!</h2>
+    <p>You have the colors — now let's put them to work. Woods Digital Solutions can build a website that brings your brand palette to life.</p>
+    <a class="modal-cta" href="https://woodsdigitalsolutions.com/connect/" target="_blank">Let's Build My Website →</a>
+    <button class="modal-dismiss" onclick="closeModal()">No thanks, I'm just browsing</button>
+  </div>
+</div>
+
 </body>
 </html>
