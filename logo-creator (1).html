@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logo Creator — Woods Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@700&family=Space+Mono:wght@700&family=Raleway:wght@800&family=Josefin+Sans:wght@700&family=Libre+Baskerville:wght@700&family=Exo+2:wght@800&family=DM+Serif+Display&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0e0e10; --surface:#17171c; --border:#2a2a35; --text:#f0ede8; --muted:#5c5c72; --accent:#e8c547; }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:'Outfit',sans-serif; font-weight:400; height:100vh; display:grid; grid-template-columns:360px 1fr; grid-template-rows:54px 1fr; overflow:hidden; }
+  header { grid-column:1/-1; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; padding:0 22px; gap:10px; }
+  .lm { width:26px; height:26px; background:var(--accent); border-radius:5px; display:grid; place-items:center; }
+  header h1 { font-weight:600; font-size:.95rem; }
+  header span { font-size:.68rem; color:var(--muted); background:#1e1e28; border:1px solid var(--border); padding:2px 8px; border-radius:20px; margin-left:4px; }
+
+  .panel { background:var(--surface); border-right:1px solid var(--border); overflow-y:auto; padding:18px 16px; display:flex; flex-direction:column; gap:20px; }
+  .panel::-webkit-scrollbar { width:4px; }
+  .panel::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+  .st { font-size:.6rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  input[type="text"] { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:7px; color:var(--text); font-family:'Outfit',sans-serif; font-size:.85rem; padding:9px 11px; outline:none; transition:border-color .2s; margin-bottom:7px; }
+  input[type="text"]:focus { border-color:var(--accent); }
+  input[type="text"]::placeholder { color:var(--muted); }
+
+  .icon-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; max-height:228px; overflow-y:auto; padding-right:2px; }
+  .icon-grid::-webkit-scrollbar { width:3px; }
+  .icon-grid::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .icon-btn { aspect-ratio:1; background:var(--bg); border:1.5px solid var(--border); border-radius:7px; cursor:pointer; display:grid; place-items:center; transition:all .15s; padding:7px; }
+  .icon-btn:hover { border-color:var(--accent); background:#1a1a22; }
+  .icon-btn.active { border-color:var(--accent); background:#2a2510; }
+  .icon-btn svg { width:100%; height:100%; overflow:visible; }
+
+  .layout-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  .layout-btn { aspect-ratio:1.3; background:var(--bg); border:1.5px solid var(--border); border-radius:7px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; transition:all .15s; padding:5px; }
+  .layout-btn:hover { border-color:var(--accent); }
+  .layout-btn.active { border-color:var(--accent); background:#2a2510; }
+  .dot { width:9px; height:9px; border-radius:2px; background:var(--muted); }
+  .line { height:3px; border-radius:2px; background:var(--muted); }
+  .layout-btn.active .dot, .layout-btn.active .line { background:var(--accent); }
+
+  .palette-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:7px; max-height:208px; overflow-y:auto; }
+  .palette-grid::-webkit-scrollbar { width:3px; }
+  .palette-grid::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+  .palette-btn { height:34px; border-radius:7px; border:2px solid transparent; cursor:pointer; display:flex; overflow:hidden; transition:all .15s; position:relative; }
+  .palette-btn:hover { transform:translateY(-1px); }
+  .palette-btn.active { border-color:white; }
+  .ps { flex:1; }
+  .pname { position:absolute; bottom:2px; left:6px; font-size:.52rem; color:rgba(255,255,255,.75); letter-spacing:.04em; text-transform:uppercase; text-shadow:0 1px 3px rgba(0,0,0,.9); pointer-events:none; white-space:nowrap; }
+
+  .font-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .font-btn { background:var(--bg); border:1.5px solid var(--border); border-radius:7px; padding:9px 8px; cursor:pointer; text-align:center; color:var(--text); font-size:1rem; transition:all .15s; line-height:1.1; }
+  .font-btn small { display:block; font-family:'Outfit',sans-serif; font-size:.56rem; color:var(--muted); margin-top:2px; letter-spacing:.06em; text-transform:uppercase; }
+  .font-btn:hover { border-color:var(--accent); }
+  .font-btn.active { border-color:var(--accent); background:#2a2510; }
+
+  .slider-row { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
+  .slider-row label { font-size:.7rem; color:var(--muted); width:76px; flex-shrink:0; }
+  input[type="range"] { flex:1; accent-color:var(--accent); height:3px; cursor:pointer; }
+  .val { font-size:.7rem; color:var(--text); width:26px; text-align:right; }
+
+  .preview-area { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:32px; position:relative; background:radial-gradient(circle at 60% 40%,#1a1a28 0%,#0e0e10 70%); overflow:hidden; }
+  .bg-toggle { position:absolute; top:18px; right:18px; display:flex; gap:5px; }
+  .bg-opt { width:26px; height:26px; border-radius:5px; border:2px solid var(--border); cursor:pointer; transition:border-color .15s; }
+  .bg-opt:hover,.bg-opt.active { border-color:var(--accent); }
+  .bg-opt.dark { background:#111; }
+  .bg-opt.light { background:#f5f5f0; }
+  .bg-opt.trans { background:repeating-conic-gradient(#aaa 0% 25%,#fff 0% 50%) 0 0/10px 10px; }
+
+  .logo-canvas { padding:44px 56px; border-radius:14px; transition:background .3s; display:flex; align-items:center; justify-content:center; min-width:320px; min-height:180px; }
+  .logo-canvas.bg-dark { background:#111; box-shadow:0 20px 60px rgba(0,0,0,.6); }
+  .logo-canvas.bg-light { background:#f5f5f0; box-shadow:0 20px 60px rgba(0,0,0,.4); }
+  .logo-canvas.bg-trans { background:repeating-conic-gradient(#aaa 0% 25%,#fff 0% 50%) 0 0/12px 12px; }
+
+  .preview-label { font-size:.62rem; color:var(--muted); letter-spacing:.12em; text-transform:uppercase; }
+  .dl-btn { background:var(--accent); color:#111; font-family:'Outfit',sans-serif; font-weight:600; font-size:.8rem; padding:10px 26px; border:none; border-radius:8px; cursor:pointer; letter-spacing:.04em; transition:all .15s; display:flex; align-items:center; gap:7px; }
+  .dl-btn:hover { background:#f5d35a; transform:translateY(-1px); }
+  .hint { font-size:.65rem; color:var(--muted); text-align:center; max-width:280px; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lm"><svg viewBox="0 0 16 16"><polygon points="8,1 15,5 15,11 8,15 1,11 1,5" fill="#111"/></svg></div>
+  <h1>Logo Creator</h1><span>by Woods Digital</span>
+</header>
+
+<div class="panel">
+  <div>
+    <div class="st">Business Name</div>
+    <input type="text" id="biz-name" placeholder="Your Business Name" value="Apex Studio" maxlength="30">
+    <input type="text" id="biz-tag"  placeholder="Tagline (optional)"  value="Design That Moves" maxlength="44">
+  </div>
+  <div>
+    <div class="st">Icon Shape</div>
+    <div class="icon-grid" id="icon-grid"></div>
+  </div>
+  <div>
+    <div class="st">Layout</div>
+    <div class="layout-grid" id="layout-grid">
+      <div class="layout-btn active" data-layout="left">
+        <div style="display:flex;align-items:center;gap:3px"><div class="dot"></div><div style="display:flex;flex-direction:column;gap:2px"><div class="line" style="width:20px"></div><div class="line" style="width:13px"></div></div></div>
+      </div>
+      <div class="layout-btn" data-layout="top">
+        <div class="dot"></div><div class="line" style="width:20px"></div><div class="line" style="width:13px"></div>
+      </div>
+      <div class="layout-btn" data-layout="right">
+        <div style="display:flex;align-items:center;gap:3px"><div style="display:flex;flex-direction:column;gap:2px"><div class="line" style="width:20px"></div><div class="line" style="width:13px"></div></div><div class="dot"></div></div>
+      </div>
+      <div class="layout-btn" data-layout="icon-only">
+        <div class="dot" style="width:15px;height:15px;border-radius:4px"></div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="st">Font Style</div>
+    <div class="font-grid" id="font-grid"></div>
+  </div>
+  <div>
+    <div class="st">Color Palette</div>
+    <div class="palette-grid" id="palette-grid"></div>
+  </div>
+  <div>
+    <div class="st">Adjust</div>
+    <div class="slider-row"><label>Icon Size</label><input type="range" id="icon-size" min="20" max="80" value="44"><span class="val" id="icon-size-val">44</span></div>
+    <div class="slider-row"><label>Name Size</label><input type="range" id="name-size" min="14" max="52" value="28"><span class="val" id="name-size-val">28</span></div>
+    <div class="slider-row"><label>Spacing</label><input type="range" id="spacing"   min="4"  max="32" value="14"><span class="val" id="spacing-val">14</span></div>
+  </div>
+</div>
+
+<div class="preview-area">
+  <div class="bg-toggle">
+    <div class="bg-opt dark active" data-bg="bg-dark"  title="Dark"></div>
+    <div class="bg-opt light"       data-bg="bg-light" title="Light"></div>
+    <div class="bg-opt trans"       data-bg="bg-trans" title="Transparent"></div>
+  </div>
+  <div class="preview-label">Live Preview</div>
+  <div class="logo-canvas bg-dark" id="logo-canvas"></div>
+  <button class="dl-btn" onclick="downloadSVG()">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/><rect x="2" y="13" width="12" height="1.5" rx=".75"/></svg>
+    Download SVG
+  </button>
+  <p class="hint">Downloads as scalable SVG — works at any size from favicon to billboard.</p>
+</div>
+
+<script>
+// ── HELPERS ───────────────────────────────────────────────────────
+function polyPts(cx,cy,r,n,a0){
+  a0=a0==null?-Math.PI/2:a0;
+  var p=[];for(var i=0;i<n;i++){var a=a0+(i/n)*2*Math.PI;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}return p.join(' ');
+}
+function starPts(cx,cy,ro,ri,n,a0){
+  a0=a0==null?-Math.PI/2:a0;
+  var p=[];for(var i=0;i<n*2;i++){var a=a0+(i/(n*2))*2*Math.PI;var r=i%2===0?ro:ri;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}return p.join(' ');
+}
+function sc(coords,s){var r=[];for(var i=0;i<coords.length;i+=2)r.push((coords[i]*s).toFixed(1)+','+(coords[i+1]*s).toFixed(1));return r.join(' ');}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── ICONS (43) ────────────────────────────────────────────────────
+var ICONS=[
+  // GEOMETRIC
+  {id:'hex',      label:'Hexagon',   draw:function(s,c){return '<polygon points="'+polyPts(s/2,s/2,s*.46,6)+'" fill="'+c+'"/>';}},
+  {id:'circle',   label:'Circle',    draw:function(s,c){return '<circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.46)+'" fill="'+c+'"/>';}},
+  {id:'ring',     label:'Ring',      draw:function(s,c){return '<circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.34)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.14)+'"/>';}},
+  {id:'diamond',  label:'Diamond',   draw:function(s,c){return '<polygon points="'+sc([.5,0,1,.5,.5,1,0,.5],s)+'" fill="'+c+'"/>';}},
+  {id:'square',   label:'Square',    draw:function(s,c){return '<rect x="'+(s*.08)+'" y="'+(s*.08)+'" width="'+(s*.84)+'" height="'+(s*.84)+'" rx="'+(s*.1)+'" fill="'+c+'"/>';}},
+  {id:'pill',     label:'Pill',      draw:function(s,c){return '<rect x="'+(s*.08)+'" y="'+(s*.08)+'" width="'+(s*.84)+'" height="'+(s*.84)+'" rx="'+(s*.42)+'" fill="'+c+'"/>';}},
+  {id:'tri-up',   label:'Triangle',  draw:function(s,c){return '<polygon points="'+sc([.5,.05,.97,.9,.03,.9],s)+'" fill="'+c+'"/>';}},
+  {id:'tri-dn',   label:'Tri Down',  draw:function(s,c){return '<polygon points="'+sc([.5,.95,.03,.1,.97,.1],s)+'" fill="'+c+'"/>';}},
+  {id:'pentagon', label:'Pentagon',  draw:function(s,c){return '<polygon points="'+polyPts(s/2,s/2,s*.46,5)+'" fill="'+c+'"/>';}},
+  {id:'octagon',  label:'Octagon',   draw:function(s,c){return '<polygon points="'+polyPts(s/2,s/2,s*.46,8,-Math.PI/8)+'" fill="'+c+'"/>';}},
+  {id:'star5',    label:'Star 5pt',  draw:function(s,c){return '<polygon points="'+starPts(s/2,s/2,s*.46,s*.2,5)+'" fill="'+c+'"/>';}},
+  {id:'star6',    label:'Star 6pt',  draw:function(s,c){return '<polygon points="'+starPts(s/2,s/2,s*.46,s*.23,6)+'" fill="'+c+'"/>';}},
+  {id:'star4',    label:'Star 4pt',  draw:function(s,c){return '<polygon points="'+starPts(s/2,s/2,s*.46,s*.16,4)+'" fill="'+c+'"/>';}},
+  {id:'star3',    label:'Tri Star',  draw:function(s,c){return '<polygon points="'+starPts(s/2,s/2,s*.46,s*.18,3)+'" fill="'+c+'"/>';}},
+  {id:'cross',    label:'Cross',     draw:function(s,c){return '<rect x="'+(s*.41)+'" y="'+(s*.08)+'" width="'+(s*.18)+'" height="'+(s*.84)+'" rx="'+(s*.06)+'" fill="'+c+'"/><rect x="'+(s*.08)+'" y="'+(s*.41)+'" width="'+(s*.84)+'" height="'+(s*.18)+'" rx="'+(s*.06)+'" fill="'+c+'"/>';}},
+  {id:'x-mark',   label:'X Mark',    draw:function(s,c){return '<g transform="rotate(45,'+(s/2)+','+(s/2)+')'+'"><rect x="'+(s*.41)+'" y="'+(s*.08)+'" width="'+(s*.18)+'" height="'+(s*.84)+'" rx="'+(s*.06)+'" fill="'+c+'"/><rect x="'+(s*.08)+'" y="'+(s*.41)+'" width="'+(s*.84)+'" height="'+(s*.18)+'" rx="'+(s*.06)+'" fill="'+c+'"/></g>';}},
+  // NATURE
+  {id:'leaf',     label:'Leaf',      draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.95)+' C'+(s*.1)+' '+(s*.9)+' '+(s*.05)+' '+(s*.2)+' '+(s*.5)+' '+(s*.05)+' C'+(s*.95)+' '+(s*.2)+' '+(s*.9)+' '+(s*.9)+' '+(s*.5)+' '+(s*.95)+'Z" fill="'+c+'"/>';}},
+  {id:'flame',    label:'Flame',     draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.95)+' C'+(s*.1)+' '+(s*.8)+' '+(s*.06)+' '+(s*.55)+' '+(s*.26)+' '+(s*.4)+' C'+(s*.21)+' '+(s*.56)+' '+(s*.36)+' '+(s*.56)+' '+(s*.33)+' '+(s*.38)+' C'+(s*.41)+' '+(s*.12)+' '+(s*.58)+' '+(s*.06)+' '+(s*.55)+' '+(s*.28)+' C'+(s*.68)+' '+(s*.1)+' '+(s*.76)+' '+(s*.3)+' '+(s*.65)+' '+(s*.46)+' C'+(s*.86)+' '+(s*.28)+' '+(s*.93)+' '+(s*.58)+' '+(s*.75)+' '+(s*.72)+' C'+(s*.95)+' '+(s*.65)+' '+(s*.92)+' '+(s*.88)+' '+(s*.5)+' '+(s*.95)+'Z" fill="'+c+'"/>';}},
+  {id:'teardrop', label:'Teardrop',  draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.04)+' C'+(s*.78)+' '+(s*.04)+' '+(s*.92)+' '+(s*.35)+' '+(s*.92)+' '+(s*.62)+' C'+(s*.92)+' '+(s*.82)+' '+(s*.73)+' '+(s*.96)+' '+(s*.5)+' '+(s*.96)+' C'+(s*.27)+' '+(s*.96)+' '+(s*.08)+' '+(s*.82)+' '+(s*.08)+' '+(s*.62)+' C'+(s*.08)+' '+(s*.35)+' '+(s*.22)+' '+(s*.04)+' '+(s*.5)+' '+(s*.04)+'Z" fill="'+c+'"/>';}},
+  {id:'wave',     label:'Wave',      draw:function(s,c){return '<path d="M'+(s*.04)+' '+(s*.58)+' C'+(s*.18)+' '+(s*.3)+' '+(s*.32)+' '+(s*.3)+' '+(s*.5)+' '+(s*.5)+' C'+(s*.68)+' '+(s*.7)+' '+(s*.82)+' '+(s*.7)+' '+(s*.96)+' '+(s*.42)+' L'+(s*.96)+' '+(s*.68)+' C'+(s*.82)+' '+(s*.96)+' '+(s*.68)+' '+(s*.96)+' '+(s*.5)+' '+(s*.76)+' C'+(s*.32)+' '+(s*.56)+' '+(s*.18)+' '+(s*.56)+' '+(s*.04)+' '+(s*.84)+'Z" fill="'+c+'"/>';}},
+  {id:'mountain', label:'Mountain',  draw:function(s,c){return '<polygon points="'+sc([.5,.06,.97,.88,.03,.88],s)+'" fill="'+c+'"/><polygon points="'+sc([.72,.38,.58,.62,.86,.62],s)+'" fill="'+c+'" opacity=".38"/>';}},
+  {id:'sun',      label:'Sun',       draw:function(s,c){return '<polygon points="'+starPts(s/2,s/2,s*.46,s*.28,8)+'" fill="'+c+'"/>';}},
+  {id:'moon',     label:'Moon',      draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.06)+' C'+(s*.76)+' '+(s*.06)+' '+(s*.94)+' '+(s*.26)+' '+(s*.94)+' '+(s*.5)+' C'+(s*.94)+' '+(s*.74)+' '+(s*.76)+' '+(s*.94)+' '+(s*.5)+' '+(s*.94)+' C'+(s*.6)+' '+(s*.82)+' '+(s*.66)+' '+(s*.67)+' '+(s*.66)+' '+(s*.5)+' C'+(s*.66)+' '+(s*.33)+' '+(s*.6)+' '+(s*.18)+' '+(s*.5)+' '+(s*.06)+'Z" fill="'+c+'"/>';}},
+  {id:'cloud',    label:'Cloud',     draw:function(s,c){return '<ellipse cx="'+(s*.33)+'" cy="'+(s*.58)+'" rx="'+(s*.28)+'" ry="'+(s*.23)+'" fill="'+c+'"/><ellipse cx="'+(s*.63)+'" cy="'+(s*.6)+'" rx="'+(s*.26)+'" ry="'+(s*.2)+'" fill="'+c+'"/><ellipse cx="'+(s*.48)+'" cy="'+(s*.46)+'" rx="'+(s*.22)+'" ry="'+(s*.19)+'" fill="'+c+'"/><ellipse cx="'+(s*.73)+'" cy="'+(s*.52)+'" rx="'+(s*.19)+'" ry="'+(s*.17)+'" fill="'+c+'"/>';}},
+  {id:'flower',   label:'Flower',    draw:function(s,c){
+    var cx=s/2,cy=s/2,pr=s*.28,sr=s*.18,p='';
+    for(var i=0;i<6;i++){var a=(i/6)*Math.PI*2;p+='<circle cx="'+(cx+pr*Math.cos(a)).toFixed(1)+'" cy="'+(cy+pr*Math.sin(a)).toFixed(1)+'" r="'+sr.toFixed(1)+'" fill="'+c+'"/>';}
+    return p+'<circle cx="'+cx+'" cy="'+cy+'" r="'+(s*.21).toFixed(1)+'" fill="'+c+'"/>';
+  }},
+  {id:'snowflake',label:'Snowflake', draw:function(s,c){
+    var cx=s/2,cy=s/2,r=s*.44,br=s*.18,sw=(s*.07).toFixed(1);
+    var g='<g stroke="'+c+'" stroke-width="'+sw+'" stroke-linecap="round">';
+    for(var i=0;i<6;i++){
+      var a=(i/6)*Math.PI*2;
+      var ex=(cx+r*Math.cos(a)).toFixed(1),ey=(cy+r*Math.sin(a)).toFixed(1);
+      g+='<line x1="'+cx+'" y1="'+cy+'" x2="'+ex+'" y2="'+ey+'"/>';
+      var bx=cx+r*.65*Math.cos(a),by=cy+r*.65*Math.sin(a);
+      var a1=a+Math.PI/3,a2=a-Math.PI/3;
+      g+='<line x1="'+bx.toFixed(1)+'" y1="'+by.toFixed(1)+'" x2="'+(bx+br*Math.cos(a1)).toFixed(1)+'" y2="'+(by+br*Math.sin(a1)).toFixed(1)+'"/>';
+      g+='<line x1="'+bx.toFixed(1)+'" y1="'+by.toFixed(1)+'" x2="'+(bx+br*Math.cos(a2)).toFixed(1)+'" y2="'+(by+br*Math.sin(a2)).toFixed(1)+'"/>';
+    }
+    return g+'</g>';
+  }},
+  // SYMBOLS
+  {id:'bolt',     label:'Bolt',      draw:function(s,c){return '<polygon points="'+sc([.62,.04,.28,.52,.48,.52,.38,.96,.72,.44,.52,.44],s)+'" fill="'+c+'"/>';}},
+  {id:'arrow-r',  label:'Arrow →',   draw:function(s,c){return '<polygon points="'+sc([.08,.36,.08,.64,.56,.64,.56,.8,.92,.5,.56,.2,.56,.36],s)+'" fill="'+c+'"/>';}},
+  {id:'arrow-u',  label:'Arrow ↑',   draw:function(s,c){return '<polygon points="'+sc([.36,.92,.64,.92,.64,.44,.8,.44,.5,.08,.2,.44,.36,.44],s)+'" fill="'+c+'"/>';}},
+  {id:'play',     label:'Play',      draw:function(s,c){return '<circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.46)+'" fill="'+c+'" opacity=".22"/><polygon points="'+sc([.37,.26,.37,.74,.78,.5],s)+'" fill="'+c+'"/>';}},
+  {id:'infinity', label:'Infinity',  draw:function(s,c){return '<path d="M'+(s*.2)+' '+(s*.5)+' C'+(s*.2)+' '+(s*.27)+' '+(s*.36)+' '+(s*.19)+' '+(s*.5)+' '+(s*.5)+' C'+(s*.64)+' '+(s*.81)+' '+(s*.8)+' '+(s*.73)+' '+(s*.8)+' '+(s*.5)+' C'+(s*.8)+' '+(s*.27)+' '+(s*.64)+' '+(s*.19)+' '+(s*.5)+' '+(s*.5)+' C'+(s*.36)+' '+(s*.81)+' '+(s*.2)+' '+(s*.73)+' '+(s*.2)+' '+(s*.5)+'Z" fill="none" stroke="'+c+'" stroke-width="'+(s*.11)+'"/>';}},
+  {id:'eye',      label:'Eye',       draw:function(s,c){return '<path d="M'+(s*.05)+' '+(s*.5)+' C'+(s*.2)+' '+(s*.18)+' '+(s*.8)+' '+(s*.18)+' '+(s*.95)+' '+(s*.5)+' C'+(s*.8)+' '+(s*.82)+' '+(s*.2)+' '+(s*.82)+' '+(s*.05)+' '+(s*.5)+'Z" fill="none" stroke="'+c+'" stroke-width="'+(s*.08)+'"/><circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.16)+'" fill="'+c+'"/>';}},
+  {id:'heart',    label:'Heart',     draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.84)+' C'+(s*.1)+' '+(s*.6)+' '+(s*.04)+' '+(s*.32)+' '+(s*.26)+' '+(s*.24)+' C'+(s*.38)+' '+(s*.18)+' '+(s*.5)+' '+(s*.3)+' '+(s*.5)+' '+(s*.3)+' C'+(s*.5)+' '+(s*.3)+' '+(s*.62)+' '+(s*.18)+' '+(s*.74)+' '+(s*.24)+' C'+(s*.96)+' '+(s*.32)+' '+(s*.9)+' '+(s*.6)+' '+(s*.5)+' '+(s*.84)+'Z" fill="'+c+'"/>';}},
+  {id:'crown',    label:'Crown',     draw:function(s,c){return '<path d="M'+(s*.06)+' '+(s*.78)+' L'+(s*.06)+' '+(s*.42)+' L'+(s*.28)+' '+(s*.62)+' L'+(s*.5)+' '+(s*.16)+' L'+(s*.72)+' '+(s*.62)+' L'+(s*.94)+' '+(s*.42)+' L'+(s*.94)+' '+(s*.78)+'Z" fill="'+c+'"/><circle cx="'+(s*.06)+'" cy="'+(s*.4)+'" r="'+(s*.07)+'" fill="'+c+'"/><circle cx="'+(s*.5)+'" cy="'+(s*.14)+'" r="'+(s*.07)+'" fill="'+c+'"/><circle cx="'+(s*.94)+'" cy="'+(s*.4)+'" r="'+(s*.07)+'" fill="'+c+'"/>';}},
+  {id:'shield',   label:'Shield',    draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.04)+' L'+(s*.94)+' '+(s*.2)+' L'+(s*.94)+' '+(s*.54)+' C'+(s*.94)+' '+(s*.78)+' '+(s*.74)+' '+(s*.92)+' '+(s*.5)+' '+(s*.97)+' C'+(s*.26)+' '+(s*.92)+' '+(s*.06)+' '+(s*.78)+' '+(s*.06)+' '+(s*.54)+' L'+(s*.06)+' '+(s*.2)+'Z" fill="'+c+'"/>';}},
+  {id:'compass',  label:'Compass',   draw:function(s,c){return '<polygon points="'+sc([.5,.06,.6,.44,.5,.36,.4,.44],s)+'" fill="'+c+'"/><polygon points="'+sc([.5,.94,.6,.56,.5,.64,.4,.56],s)+'" fill="'+c+'" opacity=".6"/><polygon points="'+sc([.06,.5,.44,.4,.36,.5,.44,.6],s)+'" fill="'+c+'" opacity=".6"/><polygon points="'+sc([.94,.5,.56,.4,.64,.5,.56,.6],s)+'" fill="'+c+'"/>';}},
+  {id:'target',   label:'Target',    draw:function(s,c){return '<circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.44)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.08)+'"/><circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.28)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.07)+'"/><circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.1)+'" fill="'+c+'"/>';}},
+  // OBJECTS
+  {id:'home',     label:'Home',      draw:function(s,c){return '<polygon points="'+sc([.5,.07,.96,.48,.82,.48,.82,.92,.62,.92,.62,.64,.38,.64,.38,.92,.18,.92,.18,.48,.04,.48],s)+'" fill="'+c+'"/>';}},
+  {id:'anchor',   label:'Anchor',    draw:function(s,c){return '<circle cx="'+(s/2)+'" cy="'+(s*.24)+'" r="'+(s*.14)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.09)+'"/><line x1="'+(s/2)+'" y1="'+(s*.38)+'" x2="'+(s/2)+'" y2="'+(s*.88)+'" stroke="'+c+'" stroke-width="'+(s*.09)+'" stroke-linecap="round"/><path d="M'+(s*.14)+' '+(s*.56)+' C'+(s*.14)+' '+(s*.82)+' '+(s*.34)+' '+(s*.92)+' '+(s*.5)+' '+(s*.88)+' C'+(s*.66)+' '+(s*.92)+' '+(s*.86)+' '+(s*.82)+' '+(s*.86)+' '+(s*.56)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.09)+'" stroke-linecap="round"/><line x1="'+(s*.24)+'" y1="'+(s*.42)+'" x2="'+(s*.76)+'" y2="'+(s*.42)+'" stroke="'+c+'" stroke-width="'+(s*.09)+'" stroke-linecap="round"/>';}},
+  {id:'chat',     label:'Chat',      draw:function(s,c){return '<rect x="'+(s*.04)+'" y="'+(s*.06)+'" width="'+(s*.92)+'" height="'+(s*.7)+'" rx="'+(s*.12)+'" fill="'+c+'"/><polygon points="'+sc([.2,.76,.38,.76,.22,.94],s)+'" fill="'+c+'"/>';}},
+  {id:'bookmark', label:'Bookmark',  draw:function(s,c){return '<path d="M'+(s*.18)+' '+(s*.04)+' L'+(s*.82)+' '+(s*.04)+' L'+(s*.82)+' '+(s*.94)+' L'+(s*.5)+' '+(s*.72)+' L'+(s*.18)+' '+(s*.94)+'Z" fill="'+c+'"/>';}},
+  {id:'feather',  label:'Feather',   draw:function(s,c){return '<path d="M'+(s*.5)+' '+(s*.96)+' C'+(s*.18)+' '+(s*.72)+' '+(s*.04)+' '+(s*.4)+' '+(s*.18)+' '+(s*.08)+' C'+(s*.56)+' '+(s*.12)+' '+(s*.84)+' '+(s*.3)+' '+(s*.86)+' '+(s*.58)+' C'+(s*.88)+' '+(s*.78)+' '+(s*.72)+' '+(s*.9)+' '+(s*.5)+' '+(s*.96)+'Z" fill="'+c+'"/><path d="M'+(s*.5)+' '+(s*.96)+' C'+(s*.42)+' '+(s*.72)+' '+(s*.38)+' '+(s*.46)+' '+(s*.4)+' '+(s*.22)+'" stroke="'+c+'" stroke-width="'+(s*.04)+'" fill="none" opacity=".4"/>';}},
+  {id:'globe',    label:'Globe',     draw:function(s,c){return '<circle cx="'+(s/2)+'" cy="'+(s/2)+'" r="'+(s*.44)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.08)+'"/><ellipse cx="'+(s/2)+'" cy="'+(s/2)+'" rx="'+(s*.21)+'" ry="'+(s*.44)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.06)+'"/><line x1="'+(s*.06)+'" y1="'+(s/2)+'" x2="'+(s*.94)+'" y2="'+(s/2)+'" stroke="'+c+'" stroke-width="'+(s*.06)+'"/><path d="M'+(s*.1)+' '+(s*.32)+' Q'+(s*.5)+' '+(s*.26)+' '+(s*.9)+' '+(s*.32)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.05)+'"/><path d="M'+(s*.1)+' '+(s*.68)+' Q'+(s*.5)+' '+(s*.74)+' '+(s*.9)+' '+(s*.68)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.05)+'"/>';}},
+  {id:'gear',     label:'Gear',      draw:function(s,c){
+    var cx=s/2,cy=s/2,ro=s*.44,ri=s*.3,n=8,p=[];
+    for(var i=0;i<n*2;i++){var a=-Math.PI/2+(i/(n*2))*Math.PI*2;var r=i%2===0?ro:ri;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}
+    return '<polygon points="'+p.join(' ')+'" fill="'+c+'"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(s*.14).toFixed(1)+'" fill="'+c+'" opacity=".25"/>';
+  }},
+  {id:'key',      label:'Key',       draw:function(s,c){return '<circle cx="'+(s*.35)+'" cy="'+(s*.37)+'" r="'+(s*.24)+'" fill="none" stroke="'+c+'" stroke-width="'+(s*.1)+'"/><line x1="'+(s*.56)+'" y1="'+(s*.55)+'" x2="'+(s*.9)+'" y2="'+(s*.9)+'" stroke="'+c+'" stroke-width="'+(s*.1)+'" stroke-linecap="round"/><line x1="'+(s*.72)+'" y1="'+(s*.71)+'" x2="'+(s*.72)+'" y2="'+(s*.85)+'" stroke="'+c+'" stroke-width="'+(s*.08)+'" stroke-linecap="round"/><line x1="'+(s*.8)+'" y1="'+(s*.79)+'" x2="'+(s*.8)+'" y2="'+(s*.9)+'" stroke="'+c+'" stroke-width="'+(s*.08)+'" stroke-linecap="round"/>';}},
+  {id:'none',     label:'No Icon',   draw:function(s,c){return '<line x1="'+(s*.22)+'" y1="'+(s*.22)+'" x2="'+(s*.78)+'" y2="'+(s*.78)+'" stroke="#666" stroke-width="'+(s*.07)+'" stroke-linecap="round"/><line x1="'+(s*.78)+'" y1="'+(s*.22)+'" x2="'+(s*.22)+'" y2="'+(s*.78)+'" stroke="#666" stroke-width="'+(s*.07)+'" stroke-linecap="round"/>';}}
+];
+
+// ── PALETTES (16) ─────────────────────────────────────────────────
+var PALETTES=[
+  {name:'Midnight Gold',  colors:['#1a1a2e','#e8c547'], icon:'#e8c547', text:'#f0ede8', tag:'#a8a070'},
+  {name:'Ocean Slate',    colors:['#1e3a5f','#5b8af0'], icon:'#5b8af0', text:'#e8f0ff', tag:'#7a9fc0'},
+  {name:'Forest Ink',     colors:['#1a2e1a','#6dbf67'], icon:'#6dbf67', text:'#e8f5e8', tag:'#8ab88a'},
+  {name:'Ember',          colors:['#2e1a1a','#e86a2a'], icon:'#e86a2a', text:'#ffe8e0', tag:'#c09080'},
+  {name:'Chalk',          colors:['#f5f5f0','#1a1a1a'], icon:'#1a1a1a', text:'#1a1a1a', tag:'#666660'},
+  {name:'Rose Quartz',    colors:['#2e1a28','#e87aaa'], icon:'#e87aaa', text:'#ffe0f0', tag:'#c09090'},
+  {name:'Steel',          colors:['#1c1c22','#9ba8be'], icon:'#9ba8be', text:'#dce4f0', tag:'#7a8898'},
+  {name:'Citrus',         colors:['#1e1e10','#d4e050'], icon:'#d4e050', text:'#f5f5e0', tag:'#a0a870'},
+  {name:'Arctic',         colors:['#0a1628','#7dd3fc'], icon:'#7dd3fc', text:'#e0f2fe', tag:'#6b9fc0'},
+  {name:'Neon Night',     colors:['#050f08','#39ff14'], icon:'#39ff14', text:'#e0ffe8', tag:'#5c9c60'},
+  {name:'Terracotta',     colors:['#2e1a0e','#c2714f'], icon:'#c2714f', text:'#fde8dc', tag:'#a08070'},
+  {name:'Plum',           colors:['#1a0a2e','#d4a8f0'], icon:'#d4a8f0', text:'#f0e0ff', tag:'#9878b8'},
+  {name:'Copper',         colors:['#1a1612','#b87333'], icon:'#b87333', text:'#fdf0e0', tag:'#9a8060'},
+  {name:'Teal Lagoon',    colors:['#041e1a','#14b8a6'], icon:'#14b8a6', text:'#e0fdf9', tag:'#5a9890'},
+  {name:'Crimson',        colors:['#0f0505','#dc2626'], icon:'#dc2626', text:'#ffe8e8', tag:'#a06060'},
+  {name:'Lavender Dusk',  colors:['#12101e','#a78bfa'], icon:'#a78bfa', text:'#f0eeff', tag:'#8878c0'}
+];
+
+// ── FONTS (8) ─────────────────────────────────────────────────────
+var FONTS=[
+  {id:'bebas',      family:'Bebas Neue',        label:'BEBAS'},
+  {id:'playfair',   family:'Playfair Display',  label:'Playfair'},
+  {id:'mono',       family:'Space Mono',        label:'MONO'},
+  {id:'raleway',    family:'Raleway',           label:'Raleway'},
+  {id:'josefin',    family:'Josefin Sans',      label:'JOSEFIN'},
+  {id:'baskerville',family:'Libre Baskerville', label:'Baskerville'},
+  {id:'exo',        family:'Exo 2',             label:'Exo 2'},
+  {id:'dm',         family:'DM Serif Display',  label:'DM Serif'}
+];
+
+// ── STATE ─────────────────────────────────────────────────────────
+var S={name:'Apex Studio',tag:'Design That Moves',icon:'hex',layout:'left',font:'bebas',pal:0,iconSize:44,nameSize:28,spacing:14};
+
+// ── BUILD UI ──────────────────────────────────────────────────────
+function buildIconGrid(){
+  var grid=document.getElementById('icon-grid'); grid.innerHTML='';
+  ICONS.forEach(function(ic){
+    var btn=document.createElement('div');
+    btn.className='icon-btn'+(ic.id===S.icon?' active':'');
+    btn.title=ic.label; btn.dataset.icon=ic.id;
+    btn.innerHTML='<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">'+ic.draw(40,PALETTES[S.pal].icon)+'</svg>';
+    btn.onclick=function(){
+      S.icon=ic.id;
+      document.querySelectorAll('.icon-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active'); render();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function rebuildIconColors(){
+  var c=PALETTES[S.pal].icon;
+  document.querySelectorAll('.icon-btn').forEach(function(btn){
+    var ic=ICONS.find(function(i){return i.id===btn.dataset.icon;});
+    if(ic) btn.querySelector('svg').innerHTML=ic.draw(40,c);
+  });
+}
+
+function buildPalettes(){
+  var grid=document.getElementById('palette-grid');
+  PALETTES.forEach(function(p,i){
+    var btn=document.createElement('div');
+    btn.className='palette-btn'+(i===S.pal?' active':''); btn.title=p.name;
+    btn.innerHTML=p.colors.map(function(c){return '<div class="ps" style="background:'+c+'"></div>';}).join('')+'<div class="pname">'+p.name+'</div>';
+    btn.onclick=function(){
+      S.pal=i;
+      document.querySelectorAll('.palette-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active'); rebuildIconColors(); render();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function buildFonts(){
+  var grid=document.getElementById('font-grid');
+  FONTS.forEach(function(f){
+    var btn=document.createElement('div');
+    btn.className='font-btn'+(f.id===S.font?' active':'');
+    btn.style.fontFamily=f.family; btn.dataset.font=f.id;
+    btn.innerHTML=f.label+'<small>'+f.id+'</small>';
+    btn.onclick=function(){
+      S.font=f.id;
+      document.querySelectorAll('.font-btn').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active'); render();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+document.querySelectorAll('.layout-btn').forEach(function(btn){
+  btn.onclick=function(){
+    S.layout=btn.dataset.layout;
+    document.querySelectorAll('.layout-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active'); render();
+  };
+});
+
+document.getElementById('biz-name').oninput=function(e){S.name=e.target.value;render();};
+document.getElementById('biz-tag').oninput=function(e){S.tag=e.target.value;render();};
+
+[['icon-size','iconSize'],['name-size','nameSize'],['spacing','spacing']].forEach(function(pair){
+  var el=document.getElementById(pair[0]);
+  el.oninput=function(){S[pair[1]]=+el.value;document.getElementById(pair[0]+'-val').textContent=el.value;render();};
+});
+
+document.querySelectorAll('.bg-opt').forEach(function(btn){
+  btn.onclick=function(){
+    var canvas=document.getElementById('logo-canvas');
+    canvas.className='logo-canvas '+btn.dataset.bg;
+    document.querySelectorAll('.bg-opt').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+  };
+});
+
+// ── RENDER ────────────────────────────────────────────────────────
+function buildSVG(forDownload){
+  var pal=PALETTES[S.pal];
+  var ff=FONTS.find(function(f){return f.id===S.font;}).family;
+  var iS=S.iconSize, nS=S.nameSize, tS=Math.max(9,Math.round(nS*.42)), gap=S.spacing;
+  var hasIcon=S.icon!=='none', hasName=S.name.trim()!=='', hasTag=S.tag.trim()!=='';
+  var iconDef=ICONS.find(function(i){return i.id===S.icon;});
+  var cfW=S.font==='mono'?0.65:S.font==='bebas'?0.55:S.font==='josefin'?0.58:0.62;
+  var nameW=S.name.length*nS*cfW, tagW=S.tag.length*tS*.56, textW=Math.max(nameW,tagW);
+  var inner='', W=0, H=0;
+
+  if(S.layout==='left'){
+    W=(hasIcon?iS+gap:0)+(hasName?textW:0)+40;
+    H=Math.max(hasIcon?iS:0,nS+(hasTag?tS+7:0))+26;
+    var ix=20, tx=ix+(hasIcon?iS+gap:0), cy=H/2, iy=cy-iS/2;
+    var nY=hasTag?cy-(nS+tS+7)/2+nS*.86:cy+nS*.35, tY=nY+tS+8;
+    if(hasIcon) inner+='<g transform="translate('+ix.toFixed(1)+','+iy.toFixed(1)+')">'+(iconDef.draw(iS,pal.icon))+'</g>';
+    if(hasName) inner+='<text x="'+tx.toFixed(1)+'" y="'+nY.toFixed(1)+'" font-family="'+ff+',sans-serif" font-size="'+nS+'" font-weight="800" fill="'+pal.text+'">'+esc(S.name)+'</text>';
+    if(hasTag)  inner+='<text x="'+tx.toFixed(1)+'" y="'+tY.toFixed(1)+'" font-family="'+ff+',sans-serif" font-size="'+tS+'" fill="'+pal.tag+'" letter-spacing="2">'+esc(S.tag.toUpperCase())+'</text>';
+
+  } else if(S.layout==='top'){
+    W=Math.max(hasIcon?iS:0,textW)+40; H=(hasIcon?iS+gap:0)+nS+(hasTag?tS+8:0)+32;
+    var cx2=W/2, curY=16;
+    if(hasIcon){inner+='<g transform="translate('+(cx2-iS/2).toFixed(1)+','+curY+')">'+(iconDef.draw(iS,pal.icon))+'</g>';curY+=iS+gap;}
+    var nY2=curY+nS*.86, tY2=nY2+tS+8;
+    if(hasName) inner+='<text x="'+cx2.toFixed(1)+'" y="'+nY2.toFixed(1)+'" text-anchor="middle" font-family="'+ff+',sans-serif" font-size="'+nS+'" font-weight="800" fill="'+pal.text+'">'+esc(S.name)+'</text>';
+    if(hasTag)  inner+='<text x="'+cx2.toFixed(1)+'" y="'+tY2.toFixed(1)+'" text-anchor="middle" font-family="'+ff+',sans-serif" font-size="'+tS+'" fill="'+pal.tag+'" letter-spacing="2">'+esc(S.tag.toUpperCase())+'</text>';
+
+  } else if(S.layout==='right'){
+    W=(hasName?textW:0)+(hasIcon?iS+gap:0)+40; H=Math.max(hasIcon?iS:0,nS+(hasTag?tS+7:0))+26;
+    var ix2=W-20-iS, tx2=20, cy2=H/2;
+    var nY3=hasTag?cy2-(nS+tS+7)/2+nS*.86:cy2+nS*.35, tY3=nY3+tS+8;
+    if(hasName) inner+='<text x="'+tx2+'" y="'+nY3.toFixed(1)+'" font-family="'+ff+',sans-serif" font-size="'+nS+'" font-weight="800" fill="'+pal.text+'">'+esc(S.name)+'</text>';
+    if(hasTag)  inner+='<text x="'+tx2+'" y="'+tY3.toFixed(1)+'" font-family="'+ff+',sans-serif" font-size="'+tS+'" fill="'+pal.tag+'" letter-spacing="2">'+esc(S.tag.toUpperCase())+'</text>';
+    if(hasIcon) inner+='<g transform="translate('+ix2.toFixed(1)+','+(cy2-iS/2).toFixed(1)+')">'+iconDef.draw(iS,pal.icon)+'</g>';
+
+  } else {
+    W=iS+40; H=iS+40;
+    if(hasIcon) inner+='<g transform="translate(20,20)">'+iconDef.draw(iS,pal.icon)+'</g>';
+  }
+
+  W=Math.max(W,80); H=Math.max(H,50);
+  var defs=forDownload?'<defs><style>@import url(\'https://fonts.googleapis.com/css2?family='+encodeURIComponent(ff)+':wght@400;800&display=swap\');</style></defs>':'';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W.toFixed(1)+' '+H.toFixed(1)+'" width="'+W.toFixed(1)+'" height="'+H.toFixed(1)+'">'+defs+inner+'</svg>';
+}
+
+function render(){document.getElementById('logo-canvas').innerHTML=buildSVG(false);}
+
+function downloadSVG(){
+  var svg=buildSVG(true);
+  var blob=new Blob([svg],{type:'image/svg+xml'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=((S.name||'logo').toLowerCase().replace(/\s+/g,'-'))+'-logo.svg';
+  a.click();
+}
+
+buildIconGrid(); buildPalettes(); buildFonts(); render();
+</script>
+</body>
+</html>
