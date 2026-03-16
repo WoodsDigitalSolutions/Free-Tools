@@ -440,7 +440,7 @@ function buildSVG(forDownload){
 function render(){document.getElementById('logo-canvas').innerHTML=buildSVG(false);}
 
 function downloadSVG(){
-  var svg=buildSVG(true);
+  var svg=buildSVG(false);
   var blob=new Blob([svg],{type:'image/svg+xml'});
   var a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
